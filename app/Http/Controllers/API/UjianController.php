@@ -358,6 +358,12 @@ class UjianController extends Controller
             'peserta_id'    => $request->peserta_id
         ])->get()->count();
 
+        $null = JawabanPeserta::where([
+            'jadwal_id'     => $request->jadwal_id, 
+            'peserta_id'    => $request->peserta_id,
+            'jawab'         => 0
+        ])->get()->count();
+
         $hasil = ($benar/$jml)*100;
 
         HasilUjian::create([
@@ -365,7 +371,7 @@ class UjianController extends Controller
             'jadwal_id'       => $request->jadwal_id,
             'jumlah_salah'    => $salah,
             'jumlah_benar'    => $benar,
-            'tidak_diisi'     => 0,
+            'tidak_diisi'     => $null,
             'hasil'           => $hasil,
         ]);
 
