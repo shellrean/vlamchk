@@ -23,7 +23,9 @@
 		          			<div class="input-group mb-3">
 							  <input type="text" class="form-control rounded-0" placeholder="Masukkan token" v-model="token_ujian">
 							  <div class="input-group-append">
-							    <button class="btn btn-outline-primary rounded-0" type="button" @click="cekToken">Submit</button>
+							    <button class="btn btn-outline-primary rounded-0" type="button" @click="cekToken" :disabled="isLoading">
+							    	<b-spinner small type="grow" v-show="isLoading"></b-spinner>
+							    Submit</button>
 							  </div>
 							</div>
 							<small class="text-danger" v-if="invalidToken.token">Token tidak sesuai dengan pusat</small>
@@ -65,6 +67,7 @@
 	      } 
 	    },
 	    computed: {
+	    	...mapGetters(['isAuth','isLoading']),
 	    	...mapState('jadwal', {
 	    		jadwal: state => state.banksoalAktif.data
 	    	}),
