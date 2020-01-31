@@ -148,6 +148,7 @@ class UjianController extends Controller
                 ->select('banksoals.id')
                 ->where('matpels.jurusan_id', '=', $jursan)
                 ->first();
+                $id = $banksols->id;
                 $all = Banksoal::with(['pertanyaans','pertanyaans.jawabans'])->where('id', $banksols->id)->first();
             }
             else {

@@ -20,25 +20,16 @@
 	</div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
 	methods: {
       logout() { 
         return new Promise((resolve, reject) => {
-            this.logoutPeserta({ no_ujian : localStorage.getItem('no_ujian') })
-            .then(() => {
               localStorage.removeItem('token')
               localStorage.removeItem('no_ujian')
               localStorage.removeItem('nama')
               localStorage.removeItem('id')
               resolve()
-            })
-            .catch(() => {
-              localStorage.removeItem('token')
-              localStorage.removeItem('no_ujian')
-              localStorage.removeItem('nama')
-              localStorage.removeItem('id')
-              resolve()
-            })
         }).then(() => {
             this.$store.state.token = localStorage.getItem('token')
             this.$router.push('/login')
