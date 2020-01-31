@@ -46,16 +46,20 @@ const mutations = {
 
 const actions = {
 	submitJawaban({ commit, state }, payload) {
+		commit('SET_LOADINGER',true, { root: true })
 		return new Promise(( resolve, reject ) => {
 			$axios.post(`/ujian`, payload) 
 			.then((response) => {
+				commit('SET_LOADINGER',false, { root: true })
 				commit('SLICE_DATA_RESP', response.data)
 				resolve(response.data)
 			})
 			.catch((error) => {
+				commit('SET_LOADINGER',false, { root: true })
 				if (error.response.status == 422) {
 					commit('SET_ERRORS', error.response.data.errors, { root: true })
 				}
+				resolve(error)
 			})
 		})
 	},
@@ -74,14 +78,16 @@ const actions = {
 		}) 
 	},
 	updateRaguJawaban({ commit, state }, payload) {
+		commit('SET_LOADINGER',true, { root: true })
 		return new Promise(( resolve, reject) => {
 			$axios.post(`/ujian/ragu-ragu`, payload) 
 			.then((response) => {
+				commit('SET_LOADINGER',false, { root: true })
 				commit('SLICE_RAGU_JAWABAN', response.data)
 				resolve(response.data)
 			})
 			.catch((error) => {
-
+				commit('SET_LOADINGER',false, { root: true })
 			})
 		})
 	},
@@ -112,13 +118,15 @@ const actions = {
 		})
 	},
 	takeFilled({ commit }, payload) {
+		commit('SET_LOADING',true, { root: true })
 		return new Promise((resolve, reject) => {
 			$axios.post(`/ujian/filled`, payload)
 			.then((response) => {
+				commit('SET_LOADING',false, { root: true })
 				commit('FILLED_DATA_UJIAN', response.data)
 			})
 			.catch((error) => {
-
+				commit('SET_LOADING',false, { root: true })
 			})
 		})
 	},
@@ -147,20 +155,24 @@ const actions = {
 	},
 	tokenChecker({ commit, state }, payload) {
 		return new Promise(( resolve, reject) => {
+			commit('SET_LOADING',true, { root: true })
 			$axios.post(`/ujian/cektoken`, payload)
 			.then( (response) => {
 				if(response.data.status == 'success') {
+					commit('SET_LOADING',false, { root: true })
 					resolve(response.data)
 				}
 				else if(response.data.status  == 'invalid') {
+					commit('SET_LOADING',false, { root: true })
 					commit('SET_INV_TOKEN_RELEASE', true)
 				}
 				else {
+					commit('SET_LOADING',false, { root: true })
 					commit('SET_INV_TOKEN_INV',true)
 				}
 			}) 
 			.catch((error) => {
-
+				commit('SET_LOADING',false, { root: true })
 			})
 		})
 	},

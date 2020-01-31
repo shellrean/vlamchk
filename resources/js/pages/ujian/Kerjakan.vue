@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<loading :active.sync="isLoading" 
+        :is-full-page="true"></loading>
+
 		<div class="card mt-5">
 			<div class="card-header">
 				SOAL NO. 
@@ -28,14 +31,21 @@
 		    	</table>
 		    </div>
 		    <div class="card-footer" v-if="filleds">
-		    	<b-button variant="secondary" size="md" squared @click="prev()" v-if="questionIndex != 0"><font-awesome-icon icon="angle-left" /> &nbsp; Sebelumnya</b-button>
+		    	<b-button variant="secondary" size="md" squared @click="prev()" v-if="questionIndex != 0" :disabled="isLoadinger">
+					<font-awesome-icon icon="angle-left" />
+					<b-spinner small type="grow" v-show="isLoadinger"></b-spinner>
+					&nbsp; Sebelumnya
+				</b-button>
 
   				<b-button variant="warning" squared style="position: absolute; left: 41%">
   					<b-form-checkbox size="lg" value="1" v-model="ragu">Ragu ragu</b-form-checkbox>
   				</b-button>
 
-		    	<b-button variant="success" class="float-right" size="md" squared @click="next()" v-if="questionIndex+1 != filleds.length">Selanjutnya &nbsp; <font-awesome-icon icon="angle-right" /></b-button>
-		    	<b-button variant="success" class="float-right" size="md" squared @click="$bvModal.show('modal-selesai')" v-if="questionIndex+1 == filleds.length && checkRagu() == false">Selesai &nbsp; <font-awesome-icon icon="check" /></b-button>
+		    	<b-button variant="success" class="float-right" size="md" :disabled="isLoadinger" squared @click="next()" v-if="questionIndex+1 != filleds.length">
+					<b-spinner small type="grow" v-show="isLoadinger"></b-spinner>
+					Selanjutnya &nbsp; <font-awesome-icon icon="angle-right" />
+				</b-button>
+		    	<b-button variant="success" class="float-right" size="md" squared @click="$bvModal.show('modal-selesai')" v-if="questionIndex+1 == filleds.length && checkRagu() == false" :disabled="isLoadinger">Selesai &nbsp; <font-awesome-icon icon="check" /></b-button>
 		    	<b-button variant="danger" class="float-right" size="md" squared v-b-modal.modal-1 v-if="questionIndex+1 == filleds.length && checkRagu() == true">Selesai &nbsp; <font-awesome-icon icon="check" /></b-button>
 		    	
 				<b-modal id="modal-1" title="Peringatan" ok-only v-if="checkRagu()">
@@ -80,7 +90,9 @@
 	</div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+import { mapActions, mapState, mapGetters, mapMutations} from 'vuex'
 import AudioPlayer from '../../components/AudioPlayer.vue'
 export default {
 	name: 'DataUjian',
@@ -89,7 +101,8 @@ export default {
 		this.start()
 	},
 	components: {
-		AudioPlayer
+		AudioPlayer,
+		Loading
 	},
 	data() {
 		return {
@@ -110,6 +123,8 @@ export default {
 		}
 	},
 	computed: {
+		...mapGetters(['isAuth','isLoading','isLoadinger']),
+		...mapMutations(['CLEAR_ERRORS','SET_LOADING']),
 		...mapState('banksoal', { soals: state => state.ujian.data }),
 		...mapState('ujian',{ 
 			jawabanPeserta: state => state.jawabanPeserta,
@@ -136,7 +151,15 @@ export default {
 				peserta: localStorage.getItem('id')
 			})
 			.then((resp) => {
-
+				
+			})
+			.catch(() => {
+				this.$notify({
+                  group: 'foo',
+                  title: 'Error',
+                  type: 'error',
+                  text: 'Terjadi Kesalahan (Error: A.1).'
+                })
 			})
 		},
 		filledAllSoal() {
@@ -149,6 +172,14 @@ export default {
 			.then((resp) => {
 
 			})
+			.catch(() => {
+				this.$notify({
+                  group: 'foo',
+                  title: 'Error',
+                  type: 'error',
+                  text: 'Terjadi Kesalahan (Error: A.2).'
+                })
+			})
 		},
 		updateSisaWaktu(time) {
 			this.updateWaktuSiswa({ 
@@ -158,6 +189,14 @@ export default {
 			})
 			.then((resp) => {
 
+			})
+			.catch(() => {
+				this.$notify({
+                  group: 'foo',
+                  title: 'Error',
+                  type: 'error',
+                  text: 'Terjadi Kesalahan (Error: A.3).'
+                })
 			})
 		},
 		selectOption(index) {
@@ -169,6 +208,14 @@ export default {
 	        	correct: this.filleds[this.questionIndex].soal.jawabans[index].correct,
 	        	index : this.questionIndex
 	        })
+			.catch(() => {
+				this.$notify({
+                  group: 'foo',
+                  title: 'Error',
+                  type: 'error',
+                  text: 'Sepertinya anda terputus dari server (Error: A.4).'
+                })
+			})
 		},
 		raguRagu(val) {
 			this.updateRaguJawaban({

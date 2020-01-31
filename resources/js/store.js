@@ -25,7 +25,8 @@ const store = new Vuex.Store({
 		token: localStorage.getItem('token'),
 		role: localStorage.getItem('role'),
 		errors: [],
-		isLoading: false
+		isLoading: false,
+		isLoadinger: false
 	},
 	getters: {
 		isAuth: state => {
@@ -36,6 +37,9 @@ const store = new Vuex.Store({
 		},
 		isLoading: state => {
 			return state.isLoading
+		},
+		isLoadinger: state => {
+			return state.isLoadinger
 		}
 	},
 	mutations: {
@@ -53,6 +57,9 @@ const store = new Vuex.Store({
 		},
 		SET_LOADING(state, payload) {
 			state.isLoading = payload
+		},
+		SET_LOADINGER(state, payload) {
+			state.isLoadinger = payload
 		}
 	}
 })

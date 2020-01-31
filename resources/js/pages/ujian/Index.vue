@@ -66,8 +66,15 @@
               localStorage.removeItem('no_ujian')
               localStorage.removeItem('nama')
               localStorage.removeItem('id')
+              resolve()
             })
-            resolve()
+            .catch(() => {
+              localStorage.removeItem('token')
+              localStorage.removeItem('no_ujian')
+              localStorage.removeItem('nama')
+              localStorage.removeItem('id')
+              resolve()
+            })
         }).then(() => {
             this.$store.state.token = localStorage.getItem('token')
             this.$router.push('/login')

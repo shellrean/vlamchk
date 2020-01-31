@@ -16,10 +16,6 @@
 		          	<tr>
 		          		<td>Durasi</td>
 		          		<td v-text="durasi"></td>
-		          	</tr>	
-		          	<tr>
-		          		<td>Ujian ditutup</td>
-		          		<td v-text="jadwal.jadwal.berakhir"></td>
 		          	</tr>
 		          </table>
 		        </div> 

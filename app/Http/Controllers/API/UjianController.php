@@ -307,7 +307,12 @@ class UjianController extends Controller
             return response()->json(['data' => $data]);
         }
 
+        if(!$ujian->mulai_ujian) {
+            return response()->json(['data' => $ujian]);
+        }
+
         $deUjian = Jadwal::find($request->jadwal_id);
+
 
         $start = Carbon::createFromFormat('H:i:s', $ujian->mulai_ujian);
         $now = Carbon::createFromFormat('H:i:s', Carbon::now()->format('H:i:s'));
@@ -318,7 +323,7 @@ class UjianController extends Controller
             return response()->json(['data' => $ujian]);
         }
         
-        $ujian->sisa_waktu = $deUjian->lama->$diff_in_minutes;
+        $ujian->sisa_waktu = $deUjian->lama-$diff_in_minutes;
         $ujian->save();
 
         return response()->json(['data' => $ujian]);

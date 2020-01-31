@@ -35,10 +35,16 @@ const actions = {
 		})
 	},
 	getUjian({ commit, state }, payload) {
+		commit('SET_LOADING',true, { root: true })
 		return new Promise(( resolve, reject) => {
 			$axios.post(`/ujian/setter`,payload)
 			.then((response) => {
 				commit('ASSIGN_SOAL_UJIAN', response.data)
+				commit('SET_LOADING',false, { root: true })
+				resolve(response.data)
+			})
+			.catch(() => {
+				commit('SET_LOADING',false, { root: true })
 				resolve(response.data)
 			})
 		})

@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row justify-content-md-center">
 		  <div class="col-md-8">
-		    <div class="card mt-5 rounded-0">
+		    <div class="card mt-5 rounded-0" v-show="jadwal">
 		      <div class="kiri">
 		        <div class="card-header rounded-0">
 		          <h4>Konfirmasi data peserta </h4>
@@ -25,7 +25,8 @@
 							  <div class="input-group-append">
 							    <button class="btn btn-outline-primary rounded-0" type="button" @click="cekToken" :disabled="isLoading">
 							    	<b-spinner small type="grow" v-show="isLoading"></b-spinner>
-							    Submit</button>
+							    	Submit
+								</button>
 							  </div>
 							</div>
 							<small class="text-danger" v-if="invalidToken.token">Token tidak sesuai dengan pusat</small>
@@ -35,7 +36,7 @@
 		          </table>
 		        </div> 
 		        <div class="card-body rounded-0 fade-in" v-if="!ujian">
-		        	<div class="alert alert-info rounded-0"><i class="cui-info"></i> &nbsp; Tidak ada jadwal ujian pada hari ini</div>
+		        	<div class="alert alert-info rounded-0 fade-in"><i class="cui-info"></i> &nbsp; Tidak ada jadwal ujian pada hari ini</div>
 			          <table class="table table-borderless">
 			          	<tr>
 			          		<td width="200px">No ujian</td>
@@ -54,9 +55,14 @@
 	</div>
 </template> 
 <script>
-	import { mapActions, mapState } from 'vuex'
+	import Loading from 'vue-loading-overlay';
+	import 'vue-loading-overlay/dist/vue-loading.css';
+	import { mapActions, mapState,mapGetters, mapMutations } from 'vuex'
 	export default {
 		name: 'KonfirmUjian',
+		components: {
+			Loading
+		},
 		created() {
 			this.ujianAktif()
 		},
