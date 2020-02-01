@@ -214,7 +214,7 @@ class UjianController extends Controller
                 'jadwal_id'     => $jadwal_id,
             ])->get();
     
-            return response()->json(['data' => $find, 'detail' => $detail]);
+            return response()->json(['data' => $find, 'detail' => $detail, 'type' => 'Under']);
         }
         
         $ujian = SiswaUjian::where([
@@ -273,7 +273,7 @@ class UjianController extends Controller
         $ujian->sisa_waktu = $deUjian->lama-$diff_in_minutes;
         $ujian->save();
 
-        return response()->json(['data' => $find, 'detail' => $ujian]);
+        return response()->json(['data' => $find, 'detail' => $ujian, 'oke' => $diff_in_minutes]);
     }
 
     public function sisaWaktu(Request $request)
@@ -411,10 +411,11 @@ class UjianController extends Controller
     public function mulaiPeserta(Request $request)
     {
         $peserta = SiswaUjian::where(['peserta_id' => $request->peserta_id])->first();
-        $peserta->mulai_ujian = now()->format('H:i:s');
-        $peserta->status_ujian = 3;
-        $peserta->save();
-
+        if(!$peserta) {
+            $peserta->mulai_ujian = now()->format('H:i:s');
+            $peserta->status_ujian = 3;
+            $peserta->save();
+        }
         return response()->json(['status' => 'save']);
     }
 }
