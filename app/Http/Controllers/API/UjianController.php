@@ -70,6 +70,26 @@ class UjianController extends Controller
 
             return response()->json(['data' => $find,'index' => $request->index]);
         }
+
+        $id = UjianAktif::first();   
+
+        $ujian = SiswaUjian::where([
+            'jadwal_id'     => $id->ujian_id,
+            'peserta_id'    => $find->peserta_id
+        ])->first();
+
+        if($ujian) {         
+            $deUjian = Jadwal::find($id->ujian_id);
+    
+            $start = Carbon::createFromFormat('H:i:s', $ujian->mulai_ujian);
+            $now = Carbon::createFromFormat('H:i:s', Carbon::now()->format('H:i:s'));
+    
+            $diff_in_minutes = $start->diffInSeconds($now);
+    
+            $ujian->sisa_waktu = $deUjian->lama-$diff_in_minutes;
+            $ujian->save();
+        }
+
         $find->jawab = $request->jawab;
         $find->iscorrect = $kj->correct;
         $find->save();
