@@ -56,10 +56,10 @@ const actions = {
 			})
 			.catch((error) => {
 				commit('SET_LOADINGER',false, { root: true })
-				if (error.response.status == 422) {
+				if (error.response && error.response.status == 422) {
 					commit('SET_ERRORS', error.response.data.errors, { root: true })
 				}
-				resolve(error)
+				reject(error)
 			})
 		})
 	},

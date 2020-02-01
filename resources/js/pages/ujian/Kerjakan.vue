@@ -78,7 +78,7 @@
 					'btn-primary' : (fiel.jawab != 0), 
 					'btn-outline-primary' : (fiel.jawab == 0), 
 					'btn-warning' : (fiel.ragu_ragu == 1),
-					'btn-dark text-light' : (index == questionIndex)}" @click="toLand(index)">
+					'btn-dark text-light' : (index == questionIndex)}" @click="toLand(index)" :disabled="isLoadinger">
 				  {{ index+1 }} 
 				</button>
 			</div>
