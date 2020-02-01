@@ -411,11 +411,13 @@ class UjianController extends Controller
     public function mulaiPeserta(Request $request)
     {
         $peserta = SiswaUjian::where(['peserta_id' => $request->peserta_id])->first();
-        if(!$peserta) {
+        if($peserta->status_ujian != 3) {
             $peserta->mulai_ujian = now()->format('H:i:s');
             $peserta->status_ujian = 3;
             $peserta->save();
+            return response()->json(['status' => 'save']);
         }
+        
         return response()->json(['status' => 'save']);
     }
 }
