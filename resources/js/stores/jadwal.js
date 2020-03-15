@@ -26,7 +26,7 @@ const actions = {
 	},
 	ujianAktif({ commit, state }, payload) {
 		return new Promise(( resolve, reject) => {
-			$axios.get(`/jadwal/aktif`, payload)
+			$axios.get(`/jadwal/aktif?peserta=${payload}`, payload)
 			.then((response) => {
 				commit('ASSIGN_UJIAN_AKTIF', response.data)
 				resolve(response.data)

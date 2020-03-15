@@ -29,6 +29,7 @@
 			          </table>
 			      	</div>
 			      	<div class="card-body py-5">
+			      	  <form @submit.prevent="postLogin">
 					  <div class="form-group row">
 					    <label for="staticEmail" class="col-sm-3 col-form-label">No peserta</label>
 					    <div class="col-sm-9">
@@ -56,12 +57,13 @@
 					  <div class="form-group row">
 					  	<label for="inputPassword" class="col-sm-3 col-form-label">&nbsp;</label>
 					  	<div class="col-sm-9">
-					        <b-button variant="success" squared block  :disabled="isLoading" @click.prevent="postLogin">
+					        <b-button variant="success" squared block  :disabled="isLoading" type="submit">
 							    <b-spinner small type="grow" v-show="isLoading"></b-spinner>
 							    Login
 							</b-button>
 					    </div>
 					  </div>
+					  </form>
 			      	</div>
 			      	<div class="card-footer">
 			          <i class="cui-info text-info"></i> Masukkan no peserta dan password untuk masuk

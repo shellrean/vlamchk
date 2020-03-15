@@ -10,7 +10,11 @@
 		        <div class="card-body rounded-0" v-if="jadwal">
 		          <table class="table table-borderless">
 		          	<tr>
-		          		<td width="150px">Waktu ujian</td>
+		          		<td width="150px">Mata ujian</td>
+		          		<td v-text="jadwal.matpel"></td>
+		          	</tr>
+		          	<tr>
+		          		<td >Waktu ujian</td>
 		          		<td v-text="mulai"></td>
 		          	</tr>
 		          	<tr>
@@ -44,7 +48,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
 	name: 'PrepareUjian',
 	created() {
-		this.ujianAktif()
+		this.ujianAktif(this.peserta.id)
 		this.starTime()
 	},
 	data() {
@@ -74,7 +78,7 @@ export default {
 	    	this.$router.push({ 
 	    		name: 'ujian.while', 
 	    		params: { 
-	    			banksoal: this.jadwal.jadwal.banksoal_id, 
+	    			banksoal: this.jadwal.banksoal_id, 
 	    			jadwal_id: this.jadwal.jadwal.id
 	    		} 
 	    	})

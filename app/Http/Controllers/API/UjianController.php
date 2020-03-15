@@ -30,20 +30,31 @@ class UjianController extends Controller
      */
     public function getsoal(Request $request)
     {
-        if($request->banksoal != 0) {
-            $all = Banksoal::with(['pertanyaans','pertanyaans.jawabans'])->where('id',$id)->first();
+        $peserta = Peserta::find($request->peserta);
+
+        $jadwal = UjianAktif::with(['jadwal'])->first();
+
+        $ids = array_column($jadwal->jadwal->ids, 'jurusan','id');
+
+        $id_banksoal = 'X';
+        foreach($ids as $key => $id) {
+            if(is_array($id)) {
+                foreach($id as $d) {
+                    if($d == $peserta->jurusan_id) {
+
+                        $id_banksoal =  $key;
+                    }
+                }
+            } else {
+                if($id == 0) {
+                    $id_banksoal =  $key;
+                }
+            }
         }
-        else {
-            $peserta = Peserta::find($request->peserta);
-            $jursan = $peserta->jurusan_id;
-            $banksols = DB::table('banksoals')
-                ->join('matpels', function($q) {
-                    $q->on('matpels.id','=','banksoals.matpel_id');
-                })
-                ->select('banksoals.id')
-                ->where('matpels.jurusan_id', '=', $jursan)
-                ->first();
-                $all = Banksoal::with(['pertanyaans','pertanyaans.jawabans'])->where('id', $banksols->id)->first();
+        $all = Banksoal::with(['pertanyaans','pertanyaans.jawabans'])->where('id',$id_banksoal)->first();
+
+        if(!$all) {
+            return response()->json([], 400);
         }
 
     	return response()->json(['data' => $all]);
@@ -423,8 +434,34 @@ class UjianController extends Controller
 
     public function getUjianAktif()
     {
-        $jadwal = UjianAktif::with(['jadwal','jadwal.banksoal','jadwal.banksoal.matpel'])->first();
+        $user_id = request()->peserta;
 
+        $peserta = Peserta::find($user_id);
+
+        $jadwal = UjianAktif::with(['jadwal'])->first();
+
+        $ids = array_column($jadwal->jadwal->ids, 'jurusan','id');
+
+        $id_banksoal = '';
+        foreach($ids as $key => $id) {
+            if(is_array($id)) {
+                foreach($id as $d) {
+                    if($d == $peserta->jurusan_id) {
+
+                        $id_banksoal =  $key;
+                    }
+                }
+            } else {
+                if($id == 0) {
+                    $id_banksoal =  $key;
+                }
+            }
+        } 
+        $banksoal = Banksoal::with('matpel')->where('id',$id_banksoal)->first();
+
+        $jadwal = $jadwal->toArray();
+        $jadwal['matpel'] = $banksoal->matpel->nama;
+        $jadwal['banksoal_id'] = $banksoal->id;
         return response()->json(['data' => $jadwal]);
     }
 
@@ -441,3 +478,4 @@ class UjianController extends Controller
         return response()->json(['status' => 'save']);
     }
 }
+ 

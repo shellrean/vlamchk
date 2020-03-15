@@ -19,7 +19,7 @@
 		          	</tr>
 		          	<tr v-if="ujian.status_ujian != 1">
 		          		<td>Token</td>
-		          		<td v-if="jadwal.token">
+		          		<td v-if="jadwal">
 		          			<div class="input-group mb-3">
 							  <input type="text" class="form-control rounded-0" placeholder="Masukkan token" v-model="token_ujian">
 							  <div class="input-group-append">
@@ -64,7 +64,7 @@
 			Loading
 		},
 		created() {
-			this.ujianAktif()
+			this.ujianAktif(this.peserta.id)
 		},
 	    data() {
 	      return {
