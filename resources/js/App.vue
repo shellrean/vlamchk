@@ -1,10 +1,6 @@
 <template>
-	<div>
+	<div class="wrapper">
 		<notifications group="foo" />
-		<div class="c-wrapper">
-			<transition name="slide-fade">
-			<router-view />
-			</transition>
-		</div >
-	</div>
+        <router-view />
+    </div>
 </template>

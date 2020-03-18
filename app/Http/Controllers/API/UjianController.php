@@ -139,6 +139,12 @@ class UjianController extends Controller
         return response()->json(['data' => $data]);
     }
 
+    /**
+     * Get list ujian
+     *
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
     public function getListUjian()
     {
         $data = Jadwal::with('banksoal')->where(['tanggal' => now()->format('Y-m-d')])->get();
@@ -307,6 +313,12 @@ class UjianController extends Controller
         return response()->json(['data' => $find, 'detail' => $ujian, 'oke' => $diff_in_minutes]);
     }
 
+    /**
+     * Get sisa waktu
+     *
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
     public function sisaWaktu(Request $request)
     {
         $detail = SiswaUjian::where([
@@ -318,6 +330,12 @@ class UjianController extends Controller
         return response()->json(['data' => 'updated']);
     }
 
+    /**
+     * Detail ujian
+     *
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
     public function detUjian(Request $request) 
     {
         $ujian = SiswaUjian::where([
@@ -361,6 +379,12 @@ class UjianController extends Controller
         return response()->json(['data' => $ujian]);
     }
 
+    /**
+     * Finish
+     *
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
     public function selesai(Request $request)
     {
         $ujian = SiswaUjian::where([
@@ -409,6 +433,12 @@ class UjianController extends Controller
         return response()->json(['status' => 'finished']);
     }
 
+    /**
+     * Check token
+     *
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
     public function cekToken(Request $request)
     {
         $jadwal = UjianAktif::first();
@@ -432,6 +462,12 @@ class UjianController extends Controller
         return response()->json(['status' => 'error']);
     }
 
+    /**
+     *  Get ujian aktif
+     *
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
     public function getUjianAktif()
     {
         $user_id = request()->peserta;
@@ -465,9 +501,16 @@ class UjianController extends Controller
         return response()->json(['data' => $jadwal]);
     }
 
+    /**
+     * Start
+     *
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
     public function mulaiPeserta(Request $request)
     {
-        $peserta = SiswaUjian::where(['peserta_id' => $request->peserta_id])->first();
+        $jadwal = UjianAktif::first();
+        $peserta = SiswaUjian::where(['peserta_id' => $request->peserta_id, 'jadwal_id' => $jadwal->ujian_id])->first();
         if($peserta->status_ujian != 3) {
             $peserta->mulai_ujian = now()->format('H:i:s');
             $peserta->status_ujian = 3;

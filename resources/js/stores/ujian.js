@@ -124,9 +124,11 @@ const actions = {
 			.then((response) => {
 				commit('SET_LOADING',false, { root: true })
 				commit('FILLED_DATA_UJIAN', response.data)
+				resolve()
 			})
 			.catch((error) => {
 				commit('SET_LOADING',false, { root: true })
+				reject()
 			})
 		})
 	},

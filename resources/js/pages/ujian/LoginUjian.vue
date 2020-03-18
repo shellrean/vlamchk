@@ -1,89 +1,45 @@
 <template>
-	<div>
-		<header style="background-color: #2c3e50;" class="headers">
-			<div class="group">
-  	  			<div class="left py-2 px-4">
-  	  				<img src="/img/brand/dki.png " width="65px">
-  	  			</div>
-		  	  	<div class="right">
-		  	  		<table width="100%" border="0" style="margin-top: 10px">   
-		     			<tr><td rowspan="3" width="90px" align="center"><img src="/img/avatars/avatar.png" class="foto" ></td>
-						<td style="color: #ecf0f1; font-size: 12px">Selamat datang peserta ujian</td></tr>
-						<tr><td><span class="user">Jangan lupa berdo'a </span></td></tr>
-					</table>
-		  	  	</div>
-		  	</div>
-		</header>
+	<div class="wrapper">
+		<div class="bg"><img src="/unbk/img/bg-header.png"></div>
+		<div class="container">
+			<div class="header">
+				<div class="logo logo-center">
+					<img src="/unbk/img/logo-white.png">
+					<div>
+						<h2>PUSPENDIK</h2>
+						<h6>CBT Application</h6>
+					</div>
+				</div>
+			</div>
+			<div class="card login">
+				<div class="card-body">
+					<h4>Selamat Datang</h4>
+					<p>Silahkan login dengan username dan password yang anda miliki</p>
+					<form class="auth-form" @submit.prevent="postLogin">
+						<div class="form-label-group">
+							<span class="fa fa-user"></span>
+							<input type="text" autofocus="" class="form-control active" :class="{ 'is-invalid' : errors.no_ujian }" v-model="data.no_ujian" placeholder="No peserta" required @keyup="clearError"/>
+							<div class="invalid-feedback" v-if="errors.no_ujian">{{ errors.no_ujian[0] }}</div>
+							<span class="line"></span>
+						</div>
+						<div class="form-label-group">
+							<span class="fa fa-lock"></span>
+							<input type="password" class="form-control":class="{ 'is-invalid' : errors.password }"placeholder="Password" v-model="data.password" required @keyup="clearError"/>
+							<div class="invalid-feedback" v-if="errors.password">{{ errors.password[0] }} </div>
+							<p v-if="errors" class="text-danger" v-text="errors.invalid"></p>
+							<span class="line"></span>
+						</div>
+						<b-button variant="primary" size="lg" block  :disabled="isLoading" type="submit">
+							<b-spinner small type="grow" v-show="isLoading"></b-spinner>&nbsp;Login
+						</b-button>
+					</form>
+				</div>
+				<div class="card-footer">
 
-		<div class="alert alert-danger fade-in" v-if="errors.invalid">{{ errors.invalid }}</div>
-		<div class="container mt-100" style="margin-bottom: 100px">
-			<div class="row justify-content-md-center">
-			    <div class="col-sm-6">
-			      <div class="card">
-			      	<div class="card-header">
-			          <table>
-			            <tr>
-			              <td><img src="/img/brand/dki.png" width="40px"></td>
-			              <td><h4 class="mx-2">Login peserta</h4></td>
-			            </tr>
-			          </table>
-			      	</div>
-			      	<div class="card-body py-5">
-			      	  <form @submit.prevent="postLogin">
-					  <div class="form-group row">
-					    <label for="staticEmail" class="col-sm-3 col-form-label">No peserta</label>
-					    <div class="col-sm-9">
-					      <div class="input-group mb-2 mr-sm-2">
-						    <div class="input-group-prepend">
-						      <div class="input-group-text rounded-0"><font-awesome-icon icon="user" /></div>
-						    </div>
-						    <input type="text" class="form-control rounded-0" :class="{ 'is-invalid' : errors.no_ujian }" v-model="data.no_ujian" placeholder="No peserta" required @keyup="clearError">
-						    <div class="invalid-feedback" v-if="errors.no_ujian">{{ errors.no_ujian[0] }}</div>
-						  </div>
-					    </div>
-					  </div>
-					  <div class="form-group row">
-					    <label for="inputPassword" class="col-sm-3 col-form-label">Password</label>
-					    <div class="col-sm-9">
-					      <div class="input-group mb-2 mr-sm-2">
-						    <div class="input-group-prepend">
-						      <div class="input-group-text rounded-0"><font-awesome-icon icon="lock" /></div>
-						    </div>
-						    <input type="password" class="form-control rounded-0" :class="{ 'is-invalid' : errors.password }"placeholder="Password" v-model="data.password" required @keyup="clearError">
-						    <div class="invalid-feedback" v-if="errors.password">{{ errors.password[0] }} </div>
-						  </div>
-					    </div>
-					  </div>
-					  <div class="form-group row">
-					  	<label for="inputPassword" class="col-sm-3 col-form-label">&nbsp;</label>
-					  	<div class="col-sm-9">
-					        <b-button variant="success" squared block  :disabled="isLoading" type="submit">
-							    <b-spinner small type="grow" v-show="isLoading"></b-spinner>
-							    Login
-							</b-button>
-					    </div>
-					  </div>
-					  </form>
-			      	</div>
-			      	<div class="card-footer">
-			          <i class="cui-info text-info"></i> Masukkan no peserta dan password untuk masuk
-			        </div>
-			      </div>
-			    </div>
+				</div>
 			</div>
 		</div>
-		<div class="fixed-bottom">
-	      <div style="margin-top:0px; bottom:50px; background-color:#dcdcdc; padding:7px; font-size:8px">
-	          <div class="content">
-	        <strong> VLAMP-CBT v1.0</strong><br>
-	        <strong> SystemAppData</strong>
-	          </div>
-	      </div>
-	      <footer class="bg-dark text-center py-2">
-	        Copyright © 2019 Shellrean. All Rights Reserved 
-	      </footer>
-	    </div>
-	</div>
+    </div>
 </template>
 <script>
 	import { mapActions, mapMutations, mapGetters, mapState } from 'vuex'

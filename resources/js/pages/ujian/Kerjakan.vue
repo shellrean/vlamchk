@@ -3,55 +3,77 @@
 		<loading :active.sync="isLoading" 
         :is-full-page="true"></loading>
 
-		<div class="card mt-5">
-			<div class="card-header">
-				SOAL NO. 
-		    	<b-button variant="primary" size="sm" squared disabled >{{ questionIndex+1 }}</b-button>
-		    	<b-button variant="outline-dark" class="float-right" size="sm" squared disabled>Sisa waktu:&nbsp; {{ prettyTime }}</b-button>
+		<div class="container exam" v-if="filleds">
+			<div class="card">
+				<div class="card-body">
+					<div class="bar-top">
+						<span>SOAL NOMOR</span>
+						<div class="soal-title" id="page">{{ questionIndex+1 }}</div>
+						<div id="page-count" style="display:none"></div>
+						<div class="right">
+							<div class="timer js-ujian">
+								<div class="timer-label hidden-xs">Sisa Waktu</div>
+								<div class="timer-time" id="timer">{{ prettyTime }}</div>
+							</div>
+							<b-button variant="primary" class="btn-soal" v-b-modal.nomorSoal>
+								Daftar Soal<span class="fa fa-th"></span>
+							</b-button>
+						</div>
+					</div>
+					<div class="bar-text">
+						<span>Ukuran Soal :
+						</span>
+						<a href="javascript:void(0)" class="font-small" id="font-small">A</a>
+						<a href="javascript:void(0)" class="font-middle" id="font-middle">A</a>
+						<a href="javascript:void(0)" class="font-big" id="font-big">A</a>
+					</div>
+					<div class="soal-wrapper" id="content">
+						<table class="table table-borderless table-sm">
+				    		<tr v-if="audio != ''">
+				    			<td colspan="2">
+				    				<audio-player :file="'http://192.168.0.200/storage/audio/'+audio"></audio-player>
+				    			</td>
+				    		</tr>
+				    		<tr>
+				    			<td colspan="2" v-html="filleds[questionIndex].soal.pertanyaan"></td>
+				    		</tr>
+				    		<tr v-for="(jawab,index) in filleds[questionIndex].soal.jawabans" :key="index">
+				    			<td width="50px">
+				    				<b-form-radio size="lg" v-model="selected" name="jwb" :value="jawab.id"  @change="selectOption(index)">
+				    					<span class="text-uppercase">{{ index | charIndex }}</span>.
+				    				</b-form-radio>
+				    			</td>
+				    			<td v-html="jawab.text_jawaban"></td>
+				    		</tr>
+				    		<tr v-if="filleds[questionIndex].soal.tipe_soal == 2">
+				    			<td>
+				    				<textarea class="form-control" placeholder="Tulis jawaban disini..." v-model="filleds[questionIndex].jawab_essy" @keyup="inputJawabEssy" style="height: 150px"></textarea>
+				    			</td>
+				    		</tr>
+				    	</table>
+					</div>
+					<div class="button-wrapper">
+						<b-button variant="primary" class="sebelum" size="md" @click="prev()" v-if="questionIndex != 0" :disabled="isLoadinger">
+							<span class="fa fa-chevron-circle-left"></span>
+							<b-spinner small type="grow" v-show="isLoadinger"></b-spinner> Sebelumnya
+						</b-button>
+
+						<button id="soal-ragu" class="btn btn-warning ml-auto">
+							<b-form-checkbox size="lg" value="1" v-model="ragu">Ragu ragu</b-form-checkbox>
+						</button>
+						<b-button variant="primary" class="sesudah" size="md" :disabled="isLoadinger" @click="next()" v-if="questionIndex+1 != filleds.length">
+							<b-spinner small type="grow" v-show="isLoadinger"></b-spinner>
+							Selanjutnya <span class="fa fa-chevron-circle-right"></span>
+						</b-button>
+		    			<b-button variant="success" class="sesudah" size="md" @click="$bvModal.show('modal-selesai')" v-if="questionIndex+1 == filleds.length && checkRagu() == false" :disabled="isLoadinger">
+		    				SELESAI <span class="fa fa-check-circle"></span>
+		    			</b-button>
+		    			<b-button variant="danger" class="sesudah" size="md" v-b-modal.modal-1 v-if="questionIndex+1 == filleds.length && checkRagu() == true">
+		    				SELESAI <span class="fa fa-check-circle"></span>
+		    			</b-button>
+					</div>
+				</div>
 			</div>
-			<div class="card-body fade-in" v-if="filleds">
-		    	<table class="table table-borderless table-sm">
-		    		<tr v-if="audio != ''">
-		    			<td colspan="2">
-		    				<audio-player :file="'http://192.168.0.200/storage/audio/'+audio"></audio-player>
-		    			</td>
-		    		</tr>
-		    		<tr>
-		    			<td colspan="2" v-html="filleds[questionIndex].soal.pertanyaan"></td>
-		    		</tr>
-		    		<tr v-for="(jawab,index) in filleds[questionIndex].soal.jawabans" :key="index">
-		    			<td width="50px"><b-form-radio v-model="selected" name="jwb" :value="jawab.id" @change="selectOption(index)"><span class="text-uppercase">{{ index | charIndex }}</span>.</b-form-radio></td>
-		    			<td v-html="jawab.text_jawaban"></td>
-		    		</tr>
-		    		<tr v-if="filleds[questionIndex].soal.tipe_soal == 2">
-		    			<td>
-		    				<textarea class="form-control" placeholder="Tulis jawaban disini..." v-model="filleds[questionIndex].jawab_essy" @keyup="inputJawabEssy" style="height: 150px"></textarea>
-		    			</td>
-		    		</tr>
-		    	</table>
-		    </div>
-		    <div class="card-footer" v-if="filleds">
-		    	<b-button variant="secondary" size="md" squared @click="prev()" v-if="questionIndex != 0" :disabled="isLoadinger">
-					<font-awesome-icon icon="angle-left" />
-					<b-spinner small type="grow" v-show="isLoadinger"></b-spinner>
-					&nbsp; Sebelumnya
-				</b-button>
-
-  				<b-button variant="warning" squared style="position: absolute; left: 41%">
-  					<b-form-checkbox size="lg" value="1" v-model="ragu">Ragu ragu</b-form-checkbox>
-  				</b-button>
-
-		    	<b-button variant="success" class="float-right" size="md" :disabled="isLoadinger" squared @click="next()" v-if="questionIndex+1 != filleds.length">
-					<b-spinner small type="grow" v-show="isLoadinger"></b-spinner>
-					Selanjutnya &nbsp; <font-awesome-icon icon="angle-right" />
-				</b-button>
-		    	<b-button variant="success" class="float-right" size="md" squared @click="$bvModal.show('modal-selesai')" v-if="questionIndex+1 == filleds.length && checkRagu() == false" :disabled="isLoadinger">Selesai &nbsp; <font-awesome-icon icon="check" /></b-button>
-		    	<b-button variant="danger" class="float-right" size="md" squared v-b-modal.modal-1 v-if="questionIndex+1 == filleds.length && checkRagu() == true">Selesai &nbsp; <font-awesome-icon icon="check" /></b-button>
-		    	
-				<b-modal id="modal-1" title="Peringatan" ok-only v-if="checkRagu()">
-				  <p class="my-4"><font-awesome-icon icon="exclamation-triangle" /> &nbsp; Masih ada jawaban ragu ragu. </p>
-				</b-modal>
-		    </div>
 		</div>
 		<b-modal id="modal-selesai">
 		    <template v-slot:modal-header="{ close }">
@@ -70,23 +92,25 @@
 		        Cancel
 		      </b-button>
 		    </template>
-		  </b-modal>
-
-		<div class="side" v-show="sidebar">
-			<div class="inner-side">
-				<button type="button" class="btn my-1 rounded-0 w-2 mx-1" v-for="(fiel,index) in filleds" :key="index" :class="{
-					'btn-primary' : (fiel.jawab != 0), 
-					'btn-outline-primary' : (fiel.jawab == 0), 
-					'btn-warning' : (fiel.ragu_ragu == 1),
-					'btn-dark text-light' : (index == questionIndex)}" @click="toLand(index)" :disabled="isLoadinger">
-				  {{ index+1 }} 
-				</button>
-			</div>
-		</div>
-		<button class="coss btn btn-info rounded-0" @click="toggle"> 
-			<font-awesome-icon icon="angle-left" v-show="!sidebar" />
-			<font-awesome-icon icon="angle-right" v-show="sidebar" />
-		</button>
+		 </b-modal>
+		<b-modal id="nomorSoal" centered title="Nomor Soal" size="lg" hide-backdrop>
+			<template v-slot:modal-footer="{ cancel }">
+		      <b-button size="sm" variant="light" @click="cancel()">
+		        Close
+		      </b-button>
+		    </template>
+		    <template v-slot:default="{ hide }">
+			  			<ul class="nomor-soal" id="nomor-soal">
+						<button type="button" class="btn my-1 rounded-0 w-2 mx-1" v-for="(fiel,index) in filleds" :key="index" :class="{
+							'btn-primary' : (fiel.jawab != 0), 
+							'btn-outline-primary' : (fiel.jawab == 0), 
+							'btn-warning' : (fiel.ragu_ragu == 1),
+							'btn-dark text-light' : (index == questionIndex)}" @click="toLand(index)" :disabled="isLoadinger">
+						  {{ index+1 }} 
+						</button>
+						</ul>
+		    </template>
+		</b-modal>
 	</div>
 </template>
 <script>
@@ -94,6 +118,7 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import { mapActions, mapState, mapGetters, mapMutations} from 'vuex'
 import AudioPlayer from '../../components/AudioPlayer.vue'
+
 export default {
 	name: 'DataUjian',
 	created() {
@@ -320,6 +345,11 @@ export default {
 
 			this.raguRagu(val)
 		}
+	},
+	mounted() {
+		window.addEventListener("keypress", e => {
+			console.log(e.keyCode);
+		});
 	}
 }
 </script>

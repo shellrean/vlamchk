@@ -1,56 +1,37 @@
 <template>
 	<div class="container">
-		<div class="row justify-content-md-center">
-		  <div class="col-md-8">
-		    <div class="card mt-5 rounded-0" v-show="jadwal">
-		      <div class="kiri">
-		        <div class="card-header rounded-0">
-		          <h4>Konfirmasi data peserta </h4>
-		        </div>
-		        <div class="card-body rounded-0 fade-in" v-if="jadwal && ujian">
-		          <table class="table table-borderless">
-		          	<tr>
-		          		<td width="200px">No ujian</td>
-		          		<td v-text="peserta.no_ujian"></td>
-		          	</tr>
-		          	<tr v-if="jadwal.banksoal">
-		          		<td>Mata pelajaran</td>
-		          		<td v-text="jadwal.banksoal.matpel.nama"></td>
-		          	</tr>
-		          	<tr v-if="ujian.status_ujian != 1">
-		          		<td>Token</td>
-		          		<td v-if="jadwal">
-		          			<div class="input-group mb-3">
-							  <input type="text" class="form-control rounded-0" placeholder="Masukkan token" v-model="token_ujian">
-							  <div class="input-group-append">
-							    <button class="btn btn-outline-primary rounded-0" type="button" @click="cekToken" :disabled="isLoading">
-							    	<b-spinner small type="grow" v-show="isLoading"></b-spinner>
-							    	Submit
-								</button>
-							  </div>
-							</div>
-							<small class="text-danger" v-if="invalidToken.token">Token tidak sesuai dengan pusat</small>
-							<small class="text-danger" v-if="invalidToken.release">Status token belum dirilis</small>
-						</td>
-		          	</tr>
-		          </table>
-		        </div> 
-		        <div class="card-body rounded-0 fade-in" v-if="!ujian">
-		        	<div class="alert alert-info rounded-0 fade-in"><i class="cui-info"></i> &nbsp; Tidak ada jadwal ujian pada hari ini</div>
-			          <table class="table table-borderless">
-			          	<tr>
-			          		<td width="200px">No ujian</td>
-			          		<td v-text="peserta.no_ujian"></td>
-			          	</tr>
-			          </table>
-			        </div>
-		        </div>
-		        <div class="card-footer">
-		        	
-		        </div>
-		      </div>
-		    </div>
-		  </div>
+		<div class="card card-bg" style="max-width: 600px">
+			<div class="card-body">
+				<h4>Konfirmasi Data Peserta</h4>
+				<form id="fmToken" name="fmToken" @submit.prevent="cekToken" class="form-custom form-ajax">
+					<div class="form-group">
+						<label for="nisn">NO UJIAN</label>
+						<p class="form-control-static" v-text="peserta.no_ujian"></p>
+					</div>
+					<div class="form-group">
+						<label for="nama">Nama Peserta</label>
+						<p class="form-control-static" v-text="peserta.nama"></p>
+					</div>
+					<div class="form-group">
+						<label for="nm_uji">Mata Ujian</label>
+						<p class="form-control-static" v-if="jadwal && ujian" v-text="jadwal.matpel"></p>
+						<p class="form-control-static" v-if="!ujian">Tidak ada jadwal ujian pada hari ini</p>
+						<span class="line"></span>
+					</div>
+					<div class="form-group" v-if="jadwal">
+						<label for="token">Token</label>
+						<input type="text" class="form-control" autofocus="" placeholder="Masukkan token" v-model="token_ujian">
+						<span class="line"></span>
+						<small class="text-danger" v-if="invalidToken.token">Token tidak sesuai dengan pusat</small>
+						<small class="text-danger" v-if="invalidToken.release">Status token belum dirilis</small>
+					</div>
+					<div class="form-group" v-if="jadwal">
+						<button type="submit" class="btn btn-primary w-100 btn-form-ajax" :disabled="isLoading">
+							<b-spinner small type="grow" v-show="isLoading"></b-spinner>Mulai
+						</button>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
 </template> 
@@ -62,9 +43,6 @@
 		name: 'KonfirmUjian',
 		components: {
 			Loading
-		},
-		created() {
-			this.ujianAktif(this.peserta.id)
 		},
 	    data() {
 	      return {
@@ -86,7 +64,6 @@
 	    	})
 	    },
 	    methods: {
-	      ...mapActions('jadwal',['ujianAktif']),
 	      ...mapActions('ujian',['getPesertaDataUjian','tokenChecker']),
 	      cekToken(){
 	      	this.tokenChecker({
@@ -106,13 +83,6 @@
 	   			lama		: this.jadwal.jadwal.lama
 	      	})
 	      }
-	    },
-	    watch: {
-	    	jadwal(val) {
-	    		if(typeof(val) != 'undefined') {
-	    			this.dataUjianPeserta()
-	    		}
-	    	}
 	    }
 	}
 </script>

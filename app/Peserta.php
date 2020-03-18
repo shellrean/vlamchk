@@ -9,4 +9,8 @@ class Peserta extends Model
     protected $fillable = [
     	'nama','no_ujian','password','api_token'
     ];
+
+    protected $hidden = [
+    	'password'
+    ];
 }
