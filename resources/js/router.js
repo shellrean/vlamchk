@@ -8,6 +8,7 @@ import UjianKonfirm from './pages/ujian/UjianKonfirm.vue'
 import UjianPrepare from './pages/ujian/UjianPrepare.vue'
 import Kerjakan from './pages/ujian/Kerjakan.vue'
 import UjianSelesai from './pages/ujian/UjianSelesai'
+import Okey from './pages/ujian/Okey'
 
 
 Vue.use(Router)
@@ -15,6 +16,11 @@ Vue.use(Router)
 const router = new Router({
 	mode: 'history',
 	routes: [
+		{
+			path: '/',
+			name: 'not',
+			component: Okey
+		},
 		{
 			path: '/login',
 			name: 'login',
