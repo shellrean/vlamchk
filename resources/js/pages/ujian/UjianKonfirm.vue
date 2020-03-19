@@ -18,14 +18,14 @@
 						<p class="form-control-static" v-if="!ujian">Tidak ada jadwal ujian pada hari ini</p>
 						<span class="line"></span>
 					</div>
-					<div class="form-group" v-if="jadwal">
+					<div class="form-group" v-if="jadwal && ujian && ujian.status_ujian != '3'">
 						<label for="token">Token</label>
 						<input type="text" class="form-control" autofocus="" placeholder="Masukkan token" v-model="token_ujian">
 						<span class="line"></span>
 						<small class="text-danger" v-if="invalidToken.token">Token tidak sesuai dengan pusat</small>
 						<small class="text-danger" v-if="invalidToken.release">Status token belum dirilis</small>
 					</div>
-					<div class="form-group" v-if="jadwal">
+					<div class="form-group" v-if="jadwal && ujian && ujian.status_ujian != '3'">
 						<button type="submit" class="btn btn-primary w-100 btn-form-ajax" :disabled="isLoading">
 							<b-spinner small type="grow" v-show="isLoading"></b-spinner>Mulai
 						</button>

@@ -54632,7 +54632,7 @@ var render = function() {
                 _c("span", { staticClass: "line" })
               ]),
               _vm._v(" "),
-              _vm.jadwal
+              _vm.jadwal && _vm.ujian && _vm.ujian.status_ujian != "3"
                 ? _c("div", { staticClass: "form-group" }, [
                     _c("label", { attrs: { for: "token" } }, [_vm._v("Token")]),
                     _vm._v(" "),
@@ -54678,7 +54678,7 @@ var render = function() {
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              _vm.jadwal
+              _vm.jadwal && _vm.ujian && _vm.ujian.status_ujian != "3"
                 ? _c("div", { staticClass: "form-group" }, [
                     _c(
                       "button",
