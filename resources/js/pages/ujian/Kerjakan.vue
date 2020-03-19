@@ -15,7 +15,7 @@
 								<div class="timer-label hidden-xs">Sisa Waktu</div>
 								<div class="timer-time" id="timer">{{ prettyTime }}</div>
 							</div>
-							<b-button variant="primary" class="btn-soal" v-b-modal.nomorSoal>
+							<b-button variant="primary" class="btn-soal" v-b-modal.nomorSoal :disabled="!listening">
 								Daftar Soal<span class="fa fa-th"></span>
 							</b-button>
 						</div>
@@ -23,37 +23,36 @@
 					<div class="bar-text">
 						<span>Ukuran Soal :
 						</span>
-						<a href="javascript:void(0)" class="font-small" id="font-small">A</a>
-						<a href="javascript:void(0)" class="font-middle" id="font-middle">A</a>
-						<a href="javascript:void(0)" class="font-big" id="font-big">A</a>
+						<b-form-input v-model="range" type="range" min="12" max="30"></b-form-input>
 					</div>
 					<div class="soal-wrapper" id="content">
 						<table class="table table-borderless table-sm">
 				    		<tr v-if="audio != ''">
 				    			<td colspan="2">
-				    				<audio-player :file="'http://192.168.0.200/storage/audio/'+audio"></audio-player>
+				    				<audio-player v-if="listening" :file="'http://192.168.0.200/storage/audio/'+audio"></audio-player>
 				    			</td>
 				    		</tr>
 				    		<tr>
-				    			<td colspan="2" v-html="filleds[questionIndex].soal.pertanyaan"></td>
+				    			<td colspan="2" :style="'font-size:'+range+'px !important'" v-html="filleds[questionIndex].soal.pertanyaan"></td>
 				    		</tr>
 				    		<tr v-for="(jawab,index) in filleds[questionIndex].soal.jawabans" :key="index">
-				    			<td width="50px">
+				    			<td width="50px" :style="'font-size:'+range+'px !important'">
 				    				<b-form-radio size="lg" v-model="selected" name="jwb" :value="jawab.id"  @change="selectOption(index)">
 				    					<span class="text-uppercase">{{ index | charIndex }}</span>.
 				    				</b-form-radio>
 				    			</td>
-				    			<td v-html="jawab.text_jawaban"></td>
+				    			<td :style="'font-size:'+range+'px !important'" v-html="jawab.text_jawaban"></td>
 				    		</tr>
 				    		<tr v-if="filleds[questionIndex].soal.tipe_soal == 2">
 				    			<td>
-				    				<textarea class="form-control" placeholder="Tulis jawaban disini..." v-model="filleds[questionIndex].jawab_essy" @keyup="inputJawabEssy" style="height: 150px"></textarea>
+				    				<textarea class="form-control" autofocus="" placeholder="Tulis jawaban disini..." v-model="filleds[questionIndex].esay" @keyup.enter="inputJawabEssy" style="height: 150px"></textarea>
+				    				<p class="text-info">Press <b>enter</b> to submit your answer</p>
 				    			</td>
 				    		</tr>
 				    	</table>
 					</div>
 					<div class="button-wrapper">
-						<b-button variant="primary" class="sebelum" size="md" @click="prev()" v-if="questionIndex != 0" :disabled="isLoadinger">
+						<b-button variant="primary" class="sebelum" size="md" @click="prev()" v-if="questionIndex != 0" :disabled="isLoadinger || !listening">
 							<span class="fa fa-chevron-circle-left"></span>
 							<b-spinner small type="grow" v-show="isLoadinger"></b-spinner> Sebelumnya
 						</b-button>
@@ -61,7 +60,7 @@
 						<button id="soal-ragu" class="btn btn-warning ml-auto">
 							<b-form-checkbox size="lg" value="1" v-model="ragu">Ragu ragu</b-form-checkbox>
 						</button>
-						<b-button variant="primary" class="sesudah" size="md" :disabled="isLoadinger" @click="next()" v-if="questionIndex+1 != filleds.length">
+						<b-button variant="primary" class="sesudah" size="md" :disabled="isLoadinger || !listening" @click="next()" v-if="questionIndex+1 != filleds.length">
 							<b-spinner small type="grow" v-show="isLoadinger"></b-spinner>
 							Selanjutnya <span class="fa fa-chevron-circle-right"></span>
 						</b-button>
@@ -75,7 +74,7 @@
 				</div>
 			</div>
 		</div>
-		<b-modal id="modal-selesai">
+		<b-modal id="modal-selesai" centered class="shadow">
 		    <template v-slot:modal-header="{ close }">
 		      <h5>Konfirmasi</h5>
 		    </template>
@@ -85,44 +84,60 @@
 		    </template>
 
 		    <template v-slot:modal-footer="{ cancel }">
-		      <b-button size="sm" variant="success" @click="selesai()" :disabled="!isKonfirm">
-		        Selesai
-		      </b-button>
-		      <b-button size="sm" variant="danger" @click="cancel()">
-		        Cancel
-		      </b-button>
+		    	<div class="button-wrapper">
+			      <b-button size="sm" variant="success" @click="selesai()" :disabled="!isKonfirm">
+			        Selesai
+			      </b-button>
+			      <b-button size="sm" variant="danger" @click="cancel()">
+			        Cancel
+			      </b-button>
+			    </div>
 		    </template>
 		 </b-modal>
-		<b-modal id="nomorSoal" centered title="Nomor Soal" size="lg" hide-backdrop>
+		<b-modal id="nomorSoal" title="Nomor Soal" size="lg" class="shadow">
 			<template v-slot:modal-footer="{ cancel }">
 		      <b-button size="sm" variant="light" @click="cancel()">
 		        Close
 		      </b-button>
 		    </template>
 		    <template v-slot:default="{ hide }">
-			  			<ul class="nomor-soal" id="nomor-soal">
-						<button type="button" class="btn my-1 rounded-0 w-2 mx-1" v-for="(fiel,index) in filleds" :key="index" :class="{
-							'btn-primary' : (fiel.jawab != 0), 
-							'btn-outline-primary' : (fiel.jawab == 0), 
-							'btn-warning' : (fiel.ragu_ragu == 1),
-							'btn-dark text-light' : (index == questionIndex)}" @click="toLand(index)" :disabled="isLoadinger">
-						  {{ index+1 }} 
-						</button>
-						</ul>
+			 	<ul class="nomor-soal" id="nomor-soal">
+			 		<li v-for="(fiel,index) in filleds" :key="index">
+			 			<a href="#" :class="{
+						'isi' : (fiel.jawab != 0),
+						'ragu' : (fiel.ragu_ragu == 1),
+						'active' : (index == questionIndex)}" @click.prevent="toLand(index)" :disabled="isLoadinger">
+			 				{{ index+1 }} 
+			 				<span></span>
+			 			</a>
+			 		</li>
+				</ul>
+		    </template>
+		</b-modal>
+		<b-modal id="modal-direction" centered title="Direction" class="shadow">
+		    <template v-slot:modal-footer="{ cancel }">
+		     	<div class="button-wrapper">
+			      <b-button size="sm" variant="primary" @click="playDirection()">
+			        Oke
+			      </b-button>
+		  		</div>
+		    </template>
+		    <template v-slot:default="{ hide }">
+		    	Listen for direction
 		    </template>
 		</b-modal>
 	</div>
 </template>
 <script>
+import { mapActions, mapState, mapGetters, mapMutations} from 'vuex'
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
-import { mapActions, mapState, mapGetters, mapMutations} from 'vuex'
 import AudioPlayer from '../../components/AudioPlayer.vue'
 
 export default {
 	name: 'DataUjian',
 	created() {
-		this.getAllSoal()
+		this.filledAllSoal()
 		this.start()
 	},
 	components: {
@@ -131,7 +146,7 @@ export default {
 	},
 	data() {
 		return {
-			questionIndex: 0,
+			questionIndex: '',
 			selected: '',
 			patt: 17,
 			sidebar: false,
@@ -139,7 +154,11 @@ export default {
 			time: 0,
 			isKonfirm : false,
 			interval: '',
-			audio: ''
+			audio: '',
+			direction: '',
+			listening: true,
+			hasdirec: [],
+			range: 16,
 		}
 	},
 	filters: {
@@ -150,7 +169,6 @@ export default {
 	computed: {
 		...mapGetters(['isAuth','isLoading','isLoadinger']),
 		...mapMutations(['CLEAR_ERRORS','SET_LOADING']),
-		...mapState('banksoal', { soals: state => state.ujian.data }),
 		...mapState('ujian',{ 
 			jawabanPeserta: state => state.jawabanPeserta,
 			filleds: state => state.filledUjian.data,
@@ -183,7 +201,7 @@ export default {
                   group: 'foo',
                   title: 'Error',
                   type: 'error',
-                  text: 'Terjadi Kesalahan (Error: A.1).'
+                  text: 'Terjadi Kesalahan (Error: 00FACCG).'
                 })
 			})
 		},
@@ -202,25 +220,7 @@ export default {
                   group: 'foo',
                   title: 'Error',
                   type: 'error',
-                  text: 'Terjadi Kesalahan (Error: A.2).'
-                })
-			})
-		},
-		updateSisaWaktu(time) {
-			this.updateWaktuSiswa({ 
-				sisa_waktu: time,
-				peserta_id: this.peserta.id,
-				jadwal_id: this.$route.params.jadwal_id
-			})
-			.then((resp) => {
-
-			})
-			.catch(() => {
-				this.$notify({
-                  group: 'foo',
-                  title: 'Error',
-                  type: 'error',
-                  text: 'Terjadi Kesalahan (Error: A.3).'
+                  text: 'Terjadi Kesalahan (Error: 00FACCF).'
                 })
 			})
 		},
@@ -238,7 +238,7 @@ export default {
                   group: 'foo',
                   title: 'Error',
                   type: 'error',
-                  text: 'Sepertinya anda terputus dari server (Error: A.4).'
+                  text: 'Sepertinya anda terputus dari server (Error: 00FACCO).'
                 })
 			})
 		},
@@ -298,8 +298,25 @@ export default {
 	        this.submitJawabanEssy({ 
 	        	jawaban_id : this.filleds[this.questionIndex].id,
 	        	index : this.questionIndex,
-	        	essy: fill.jawab_essy
+	        	essy: fill.esay
 	        })
+	        .catch(() => {
+	        	this.$notify({
+                  group: 'foo',
+                  title: 'Error',
+                  type: 'error',
+                  text: 'Sepertinya anda terputus dari server (Error: 00FACCO).'
+                })
+	        })
+		},
+		playDirection() {
+			this.listening = false
+			this.direction.play()
+			this.direction.onended = () => {
+				this.hasdirec.push(this.filleds[this.questionIndex].soal.id)
+				this.listening = true
+			}
+			this.$bvModal.hide('modal-direction')
 		}
 	},
 	watch: {
@@ -316,22 +333,24 @@ export default {
 			else {
 				this.audio = ''
 			}
+
+			if(this.filleds[this.questionIndex].soal.direction != null) {
+				this.direction = new Audio('http://192.168.0.200/storage/audio/'+this.filleds[this.questionIndex].soal.direction)
+			} else {
+				if(this.direction != '') {
+					this.direction.pause()
+				}
+				this.direction = ''
+			}
 		},
 		filleds() {
-			this.selected = this.filleds[this.questionIndex].jawab
-			this.ragu = this.filleds[this.questionIndex].ragu_ragu
-			if(this.filleds[this.questionIndex].soal.audio != null) {
-				this.audio = this.filleds[this.questionIndex].soal.audio
-			} 
-			else {
-				this.audio = ''
-			}
+			this.questionIndex = 0
 		},
 		detail(val) {
 			this.time = val.sisa_waktu
 			this.interval = setInterval( () => {
 				if (this.time > 0) {
-					// this.updateSisaWaktu(this.time)
+					
 				} else {
 					this.selesai()
 				}
@@ -341,15 +360,23 @@ export default {
 			if (val == false) {
 				const set = 0
 				this.raguRagu(set)
+			} else {
+				this.raguRagu(val)
 			}
-
-			this.raguRagu(val)
+		},
+		direction(val) {
+			if(val != '') {
+				if(this.hasdirec.includes(this.filleds[this.questionIndex].soal.id)) {
+					return
+				}
+				this.$bvModal.show('modal-direction')
+			}
 		}
-	},
-	mounted() {
-		window.addEventListener("keypress", e => {
-			console.log(e.keyCode);
-		});
 	}
 }
 </script>
+<style type="text/css">
+	.modal-backdrop {
+	    background-color: #00a3ea52 !important;
+	}
+</style>

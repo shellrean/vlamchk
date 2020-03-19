@@ -18053,14 +18053,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     file: {
@@ -18074,6 +18066,10 @@ __webpack_require__.r(__webpack_exports__);
     loop: {
       type: Boolean,
       "default": false
+    },
+    show: {
+      type: Boolean,
+      "default": true
     }
   },
   data: function data() {
@@ -18290,11 +18286,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue_loading_overlay__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-loading-overlay */ "./node_modules/vue-loading-overlay/dist/vue-loading.min.js");
-/* harmony import */ var vue_loading_overlay__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_loading_overlay__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-loading-overlay/dist/vue-loading.css */ "./node_modules/vue-loading-overlay/dist/vue-loading.css");
-/* harmony import */ var vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue_loading_overlay__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-loading-overlay */ "./node_modules/vue-loading-overlay/dist/vue-loading.min.js");
+/* harmony import */ var vue_loading_overlay__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_loading_overlay__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-loading-overlay/dist/vue-loading.css */ "./node_modules/vue-loading-overlay/dist/vue-loading.css");
+/* harmony import */ var vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _components_AudioPlayer_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/AudioPlayer.vue */ "./resources/js/components/AudioPlayer.vue");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -18417,6 +18413,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -18424,16 +18435,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'DataUjian',
   created: function created() {
-    this.getAllSoal();
+    this.filledAllSoal();
     this.start();
   },
   components: {
     AudioPlayer: _components_AudioPlayer_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-    Loading: vue_loading_overlay__WEBPACK_IMPORTED_MODULE_0___default.a
+    Loading: vue_loading_overlay__WEBPACK_IMPORTED_MODULE_1___default.a
   },
   data: function data() {
     return {
-      questionIndex: 0,
+      questionIndex: '',
       selected: '',
       patt: 17,
       sidebar: false,
@@ -18441,7 +18452,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       time: 0,
       isKonfirm: false,
       interval: '',
-      audio: ''
+      audio: '',
+      direction: '',
+      listening: true,
+      hasdirec: [],
+      range: 16
     };
   },
   filters: {
@@ -18449,11 +18464,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return String.fromCharCode(97 + i);
     }
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(['isAuth', 'isLoading', 'isLoadinger']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapMutations"])(['CLEAR_ERRORS', 'SET_LOADING']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])('banksoal', {
-    soals: function soals(state) {
-      return state.ujian.data;
-    }
-  }), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])('ujian', {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(['isAuth', 'isLoading', 'isLoadinger']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(['CLEAR_ERRORS', 'SET_LOADING']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('ujian', {
     jawabanPeserta: function jawabanPeserta(state) {
       return state.jawabanPeserta;
     },
@@ -18463,7 +18474,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     detail: function detail(state) {
       return state.filledUjian.detail;
     }
-  }), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])('user', {
+  }), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('user', {
     peserta: function peserta(state) {
       return state.pesertaDetail;
     }
@@ -18476,7 +18487,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return hours + ':' + minutes + ':' + seconds;
     }
   }),
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])('banksoal', ['getUjian']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])('ujian', ['submitJawaban', 'submitJawabanEssy', 'takeFilled', 'updateWaktuSiswa', 'updateRaguJawaban', 'selesaiUjianPeserta']), {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('banksoal', ['getUjian']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('ujian', ['submitJawaban', 'submitJawabanEssy', 'takeFilled', 'updateWaktuSiswa', 'updateRaguJawaban', 'selesaiUjianPeserta']), {
     getAllSoal: function getAllSoal() {
       var _this = this;
 
@@ -18488,7 +18499,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           group: 'foo',
           title: 'Error',
           type: 'error',
-          text: 'Terjadi Kesalahan (Error: A.1).'
+          text: 'Terjadi Kesalahan (Error: 00FACCG).'
         });
       });
     },
@@ -18505,28 +18516,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           group: 'foo',
           title: 'Error',
           type: 'error',
-          text: 'Terjadi Kesalahan (Error: A.2).'
-        });
-      });
-    },
-    updateSisaWaktu: function updateSisaWaktu(time) {
-      var _this3 = this;
-
-      this.updateWaktuSiswa({
-        sisa_waktu: time,
-        peserta_id: this.peserta.id,
-        jadwal_id: this.$route.params.jadwal_id
-      }).then(function (resp) {})["catch"](function () {
-        _this3.$notify({
-          group: 'foo',
-          title: 'Error',
-          type: 'error',
-          text: 'Terjadi Kesalahan (Error: A.3).'
+          text: 'Terjadi Kesalahan (Error: 00FACCF).'
         });
       });
     },
     selectOption: function selectOption(index) {
-      var _this4 = this;
+      var _this3 = this;
 
       var fill = this.filleds[this.questionIndex];
       this.submitJawaban({
@@ -18535,11 +18530,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         correct: this.filleds[this.questionIndex].soal.jawabans[index].correct,
         index: this.questionIndex
       })["catch"](function () {
-        _this4.$notify({
+        _this3.$notify({
           group: 'foo',
           title: 'Error',
           type: 'error',
-          text: 'Sepertinya anda terputus dari server (Error: A.4).'
+          text: 'Sepertinya anda terputus dari server (Error: 00FACCO).'
         });
       });
     },
@@ -18573,11 +18568,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.questionIndex = index;
     },
     start: function start() {
-      var _this5 = this;
+      var _this4 = this;
 
       this.timer = setInterval(function () {
-        if (_this5.time > 0) {
-          _this5.time--;
+        if (_this4.time > 0) {
+          _this4.time--;
         } else {}
       }, 1000);
     },
@@ -18596,12 +18591,35 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return false;
     },
     inputJawabEssy: function inputJawabEssy(val) {
+      var _this5 = this;
+
       var fill = this.filleds[this.questionIndex];
       this.submitJawabanEssy({
         jawaban_id: this.filleds[this.questionIndex].id,
         index: this.questionIndex,
-        essy: fill.jawab_essy
+        essy: fill.esay
+      })["catch"](function () {
+        _this5.$notify({
+          group: 'foo',
+          title: 'Error',
+          type: 'error',
+          text: 'Sepertinya anda terputus dari server (Error: 00FACCO).'
+        });
       });
+    },
+    playDirection: function playDirection() {
+      var _this6 = this;
+
+      this.listening = false;
+      this.direction.play();
+
+      this.direction.onended = function () {
+        _this6.hasdirec.push(_this6.filleds[_this6.questionIndex].soal.id);
+
+        _this6.listening = true;
+      };
+
+      this.$bvModal.hide('modal-direction');
     }
   }),
   watch: {
@@ -18617,25 +18635,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       } else {
         this.audio = '';
       }
-    },
-    filleds: function filleds() {
-      this.selected = this.filleds[this.questionIndex].jawab;
-      this.ragu = this.filleds[this.questionIndex].ragu_ragu;
 
-      if (this.filleds[this.questionIndex].soal.audio != null) {
-        this.audio = this.filleds[this.questionIndex].soal.audio;
+      if (this.filleds[this.questionIndex].soal.direction != null) {
+        this.direction = new Audio('http://192.168.0.200/storage/audio/' + this.filleds[this.questionIndex].soal.direction);
       } else {
-        this.audio = '';
+        if (this.direction != '') {
+          this.direction.pause();
+        }
+
+        this.direction = '';
       }
     },
+    filleds: function filleds() {
+      this.questionIndex = 0;
+    },
     detail: function detail(val) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.time = val.sisa_waktu;
       this.interval = setInterval(function () {
-        if (_this6.time > 0) {// this.updateSisaWaktu(this.time)
-        } else {
-          _this6.selesai();
+        if (_this7.time > 0) {} else {
+          _this7.selesai();
         }
       }, 5000);
     },
@@ -18643,15 +18663,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (val == false) {
         var set = 0;
         this.raguRagu(set);
+      } else {
+        this.raguRagu(val);
       }
+    },
+    direction: function direction(val) {
+      if (val != '') {
+        if (this.hasdirec.includes(this.filleds[this.questionIndex].soal.id)) {
+          return;
+        }
 
-      this.raguRagu(val);
+        this.$bvModal.show('modal-direction');
+      }
     }
-  },
-  mounted: function mounted() {
-    window.addEventListener("keypress", function (e) {
-      console.log(e.keyCode);
-    });
   }
 });
 
@@ -47736,6 +47760,25 @@ exports.push([module.i, ".vld-overlay {\n  bottom: 0;\n  left: 0;\n  position: a
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.modal-backdrop {\n    background-color: #00a3ea52 !important;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/lib/css-base.js":
 /*!*************************************************!*\
   !*** ./node_modules/css-loader/lib/css-base.js ***!
@@ -52855,6 +52898,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./Kerjakan.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -53504,152 +53577,91 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "player-wrapper", attrs: { id: "audio" } }, [
-    _c("div", { staticClass: "player" }, [
-      _c("div", { staticClass: "player-controls" }, [
-        _c("div", [
-          _c(
-            "a",
-            {
-              attrs: { title: "Play/Pause", href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.playing = !_vm.playing
-                }
-              }
-            },
-            [
+    _vm.show
+      ? _c("div", { staticClass: "player" }, [
+          _c("div", { staticClass: "player-controls" }, [
+            _c("div", [
               _c(
-                "svg",
+                "a",
                 {
-                  attrs: {
-                    width: "18px",
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 20 20"
+                  attrs: { title: "Play/Pause", href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.playing = !_vm.playing
+                    }
                   }
                 },
                 [
-                  !_vm.playing
-                    ? _c("path", {
-                        attrs: {
-                          fill: "currentColor",
-                          d:
-                            "M15,10.001c0,0.299-0.305,0.514-0.305,0.514l-8.561,5.303C5.51,16.227,5,15.924,5,15.149V4.852c0-0.777,0.51-1.078,1.135-0.67l8.561,5.305C14.695,9.487,15,9.702,15,10.001z"
-                        }
-                      })
-                    : _c("path", {
-                        attrs: {
-                          fill: "currentColor",
-                          d:
-                            "M15,3h-2c-0.553,0-1,0.048-1,0.6v12.8c0,0.552,0.447,0.6,1,0.6h2c0.553,0,1-0.048,1-0.6V3.6C16,3.048,15.553,3,15,3z M7,3H5C4.447,3,4,3.048,4,3.6v12.8C4,16.952,4.447,17,5,17h2c0.553,0,1-0.048,1-0.6V3.6C8,3.048,7.553,3,7,3z"
-                        }
-                      })
+                  _c(
+                    "svg",
+                    {
+                      attrs: {
+                        width: "18px",
+                        xmlns: "http://www.w3.org/2000/svg",
+                        viewBox: "0 0 20 20"
+                      }
+                    },
+                    [
+                      !_vm.playing
+                        ? _c("path", {
+                            attrs: {
+                              fill: "currentColor",
+                              d:
+                                "M15,10.001c0,0.299-0.305,0.514-0.305,0.514l-8.561,5.303C5.51,16.227,5,15.924,5,15.149V4.852c0-0.777,0.51-1.078,1.135-0.67l8.561,5.305C14.695,9.487,15,9.702,15,10.001z"
+                            }
+                          })
+                        : _c("path", {
+                            attrs: {
+                              fill: "currentColor",
+                              d:
+                                "M15,3h-2c-0.553,0-1,0.048-1,0.6v12.8c0,0.552,0.447,0.6,1,0.6h2c0.553,0,1-0.048,1-0.6V3.6C16,3.048,15.553,3,15,3z M7,3H5C4.447,3,4,3.048,4,3.6v12.8C4,16.952,4.447,17,5,17h2c0.553,0,1-0.048,1-0.6V3.6C8,3.048,7.553,3,7,3z"
+                            }
+                          })
+                    ]
+                  )
                 ]
               )
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", [
-          _c(
-            "div",
-            {
-              staticClass: "player-progress",
-              attrs: { title: "Time played : Total time" },
-              on: { click: _vm.seek }
-            },
-            [
-              _c("div", {
-                staticClass: "player-seeker",
-                style: { width: this.percentComplete + "%" }
-              })
-            ]
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "player-time" }, [
-            _c("div", { staticClass: "player-time-current" }, [
-              _vm._v(_vm._s(_vm._f("convertTimeHHMMSS")(this.currentSeconds)))
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "player-time-total" }, [
-              _vm._v(_vm._s(_vm._f("convertTimeHHMMSS")(this.durationSeconds)))
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", [
-          _c(
-            "a",
-            {
-              attrs: { title: "Volume", href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                },
-                mouseenter: function($event) {
-                  _vm.showVolume = true
-                }
-              }
-            },
-            [
+            _c("div", [
               _c(
-                "svg",
+                "div",
                 {
-                  attrs: {
-                    width: "18px",
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 20 20"
-                  }
+                  staticClass: "player-progress",
+                  attrs: { title: "Time played : Total time" }
                 },
                 [
-                  _c("path", {
-                    attrs: {
-                      fill: "currentColor",
-                      d:
-                        "M19,13.805C19,14.462,18.462,15,17.805,15H1.533c-0.88,0-0.982-0.371-0.229-0.822l16.323-9.055C18.382,4.67,19,5.019,19,5.9V13.805z"
-                    }
+                  _c("div", {
+                    staticClass: "player-seeker",
+                    style: { width: this.percentComplete + "%" }
                   })
                 ]
               ),
               _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model.lazy.number",
-                    value: _vm.volume,
-                    expression: "volume",
-                    modifiers: { lazy: true, number: true }
-                  },
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showVolume,
-                    expression: "showVolume"
-                  }
-                ],
-                attrs: { type: "range", min: "0", max: "100" },
-                domProps: { value: _vm.volume },
-                on: {
-                  change: function($event) {
-                    _vm.volume = _vm._n($event.target.value)
-                  },
-                  blur: function($event) {
-                    return _vm.$forceUpdate()
-                  }
-                }
-              })
-            ]
-          )
+              _c("div", { staticClass: "player-time" }, [
+                _c("div", { staticClass: "player-time-current" }, [
+                  _vm._v(
+                    _vm._s(_vm._f("convertTimeHHMMSS")(this.currentSeconds))
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "player-time-total" }, [
+                  _vm._v(
+                    _vm._s(_vm._f("convertTimeHHMMSS")(this.durationSeconds))
+                  )
+                ])
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("audio", {
+            ref: "audiofile",
+            staticStyle: { display: "none" },
+            attrs: { loop: _vm.innerLoop, src: _vm.file, preload: "auto" }
+          })
         ])
-      ]),
-      _vm._v(" "),
-      _c("audio", {
-        ref: "audiofile",
-        staticStyle: { display: "none" },
-        attrs: { loop: _vm.innerLoop, src: _vm.file, preload: "auto" }
-      })
-    ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = []
@@ -53816,7 +53828,10 @@ var render = function() {
                             }
                           ],
                           staticClass: "btn-soal",
-                          attrs: { variant: "primary" }
+                          attrs: {
+                            variant: "primary",
+                            disabled: !_vm.listening
+                          }
                         },
                         [
                           _vm._v("\n\t\t\t\t\t\t\t\tDaftar Soal"),
@@ -53828,7 +53843,25 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _vm._m(0),
+                _c(
+                  "div",
+                  { staticClass: "bar-text" },
+                  [
+                    _c("span", [_vm._v("Ukuran Soal :\n\t\t\t\t\t\t")]),
+                    _vm._v(" "),
+                    _c("b-form-input", {
+                      attrs: { type: "range", min: "12", max: "30" },
+                      model: {
+                        value: _vm.range,
+                        callback: function($$v) {
+                          _vm.range = $$v
+                        },
+                        expression: "range"
+                      }
+                    })
+                  ],
+                  1
+                ),
                 _vm._v(" "),
                 _c(
                   "div",
@@ -53844,13 +53877,15 @@ var render = function() {
                                 "td",
                                 { attrs: { colspan: "2" } },
                                 [
-                                  _c("audio-player", {
-                                    attrs: {
-                                      file:
-                                        "http://192.168.0.200/storage/audio/" +
-                                        _vm.audio
-                                    }
-                                  })
+                                  _vm.listening
+                                    ? _c("audio-player", {
+                                        attrs: {
+                                          file:
+                                            "http://192.168.0.200/storage/audio/" +
+                                            _vm.audio
+                                        }
+                                      })
+                                    : _vm._e()
                                 ],
                                 1
                               )
@@ -53859,6 +53894,7 @@ var render = function() {
                         _vm._v(" "),
                         _c("tr", [
                           _c("td", {
+                            style: "font-size:" + _vm.range + "px !important",
                             attrs: { colspan: "2" },
                             domProps: {
                               innerHTML: _vm._s(
@@ -53874,7 +53910,11 @@ var render = function() {
                             return _c("tr", { key: index }, [
                               _c(
                                 "td",
-                                { attrs: { width: "50px" } },
+                                {
+                                  style:
+                                    "font-size:" + _vm.range + "px !important",
+                                  attrs: { width: "50px" }
+                                },
                                 [
                                   _c(
                                     "b-form-radio",
@@ -53915,6 +53955,8 @@ var render = function() {
                               ),
                               _vm._v(" "),
                               _c("td", {
+                                style:
+                                  "font-size:" + _vm.range + "px !important",
                                 domProps: {
                                   innerHTML: _vm._s(jawab.text_jawaban)
                                 }
@@ -53932,35 +53974,49 @@ var render = function() {
                                       name: "model",
                                       rawName: "v-model",
                                       value:
-                                        _vm.filleds[_vm.questionIndex]
-                                          .jawab_essy,
-                                      expression:
-                                        "filleds[questionIndex].jawab_essy"
+                                        _vm.filleds[_vm.questionIndex].esay,
+                                      expression: "filleds[questionIndex].esay"
                                     }
                                   ],
                                   staticClass: "form-control",
                                   staticStyle: { height: "150px" },
                                   attrs: {
+                                    autofocus: "",
                                     placeholder: "Tulis jawaban disini..."
                                   },
                                   domProps: {
-                                    value:
-                                      _vm.filleds[_vm.questionIndex].jawab_essy
+                                    value: _vm.filleds[_vm.questionIndex].esay
                                   },
                                   on: {
-                                    keyup: _vm.inputJawabEssy,
+                                    keyup: function($event) {
+                                      if (
+                                        !$event.type.indexOf("key") &&
+                                        _vm._k(
+                                          $event.keyCode,
+                                          "enter",
+                                          13,
+                                          $event.key,
+                                          "Enter"
+                                        )
+                                      ) {
+                                        return null
+                                      }
+                                      return _vm.inputJawabEssy($event)
+                                    },
                                     input: function($event) {
                                       if ($event.target.composing) {
                                         return
                                       }
                                       _vm.$set(
                                         _vm.filleds[_vm.questionIndex],
-                                        "jawab_essy",
+                                        "esay",
                                         $event.target.value
                                       )
                                     }
                                   }
-                                })
+                                }),
+                                _vm._v(" "),
+                                _vm._m(0)
                               ])
                             ])
                           : _vm._e()
@@ -53982,7 +54038,7 @@ var render = function() {
                             attrs: {
                               variant: "primary",
                               size: "md",
-                              disabled: _vm.isLoadinger
+                              disabled: _vm.isLoadinger || !_vm.listening
                             },
                             on: {
                               click: function($event) {
@@ -54045,7 +54101,7 @@ var render = function() {
                             attrs: {
                               variant: "primary",
                               size: "md",
-                              disabled: _vm.isLoadinger
+                              disabled: _vm.isLoadinger || !_vm.listening
                             },
                             on: {
                               click: function($event) {
@@ -54128,7 +54184,8 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _c("b-modal", {
-        attrs: { id: "modal-selesai" },
+        staticClass: "shadow",
+        attrs: { id: "modal-selesai", centered: "" },
         scopedSlots: _vm._u([
           {
             key: "modal-header",
@@ -54165,33 +54222,40 @@ var render = function() {
               var cancel = ref.cancel
               return [
                 _c(
-                  "b-button",
-                  {
-                    attrs: {
-                      size: "sm",
-                      variant: "success",
-                      disabled: !_vm.isKonfirm
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.selesai()
-                      }
-                    }
-                  },
-                  [_vm._v("\n\t\t        Selesai\n\t\t      ")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "b-button",
-                  {
-                    attrs: { size: "sm", variant: "danger" },
-                    on: {
-                      click: function($event) {
-                        return cancel()
-                      }
-                    }
-                  },
-                  [_vm._v("\n\t\t        Cancel\n\t\t      ")]
+                  "div",
+                  { staticClass: "button-wrapper" },
+                  [
+                    _c(
+                      "b-button",
+                      {
+                        attrs: {
+                          size: "sm",
+                          variant: "success",
+                          disabled: !_vm.isKonfirm
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.selesai()
+                          }
+                        }
+                      },
+                      [_vm._v("\n\t\t\t        Selesai\n\t\t\t      ")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "b-button",
+                      {
+                        attrs: { size: "sm", variant: "danger" },
+                        on: {
+                          click: function($event) {
+                            return cancel()
+                          }
+                        }
+                      },
+                      [_vm._v("\n\t\t\t        Cancel\n\t\t\t      ")]
+                    )
+                  ],
+                  1
                 )
               ]
             }
@@ -54200,13 +54264,8 @@ var render = function() {
       }),
       _vm._v(" "),
       _c("b-modal", {
-        attrs: {
-          id: "nomorSoal",
-          centered: "",
-          title: "Nomor Soal",
-          size: "lg",
-          "hide-backdrop": ""
-        },
+        staticClass: "shadow",
+        attrs: { id: "nomorSoal", title: "Nomor Soal", size: "lg" },
         scopedSlots: _vm._u([
           {
             key: "modal-footer",
@@ -54237,36 +54296,78 @@ var render = function() {
                   "ul",
                   { staticClass: "nomor-soal", attrs: { id: "nomor-soal" } },
                   _vm._l(_vm.filleds, function(fiel, index) {
-                    return _c(
-                      "button",
-                      {
-                        key: index,
-                        staticClass: "btn my-1 rounded-0 w-2 mx-1",
-                        class: {
-                          "btn-primary": fiel.jawab != 0,
-                          "btn-outline-primary": fiel.jawab == 0,
-                          "btn-warning": fiel.ragu_ragu == 1,
-                          "btn-dark text-light": index == _vm.questionIndex
-                        },
-                        attrs: { type: "button", disabled: _vm.isLoadinger },
-                        on: {
-                          click: function($event) {
-                            return _vm.toLand(index)
+                    return _c("li", { key: index }, [
+                      _c(
+                        "a",
+                        {
+                          class: {
+                            isi: fiel.jawab != 0,
+                            ragu: fiel.ragu_ragu == 1,
+                            active: index == _vm.questionIndex
+                          },
+                          attrs: { href: "#", disabled: _vm.isLoadinger },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.toLand(index)
+                            }
                           }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n\t\t\t\t\t\t  " +
-                            _vm._s(index + 1) +
-                            " \n\t\t\t\t\t\t"
-                        )
-                      ]
-                    )
+                        },
+                        [
+                          _vm._v(
+                            "\n\t\t\t \t\t\t\t" +
+                              _vm._s(index + 1) +
+                              " \n\t\t\t \t\t\t\t"
+                          ),
+                          _c("span")
+                        ]
+                      )
+                    ])
                   }),
                   0
                 )
               ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("b-modal", {
+        staticClass: "shadow",
+        attrs: { id: "modal-direction", centered: "", title: "Direction" },
+        scopedSlots: _vm._u([
+          {
+            key: "modal-footer",
+            fn: function(ref) {
+              var cancel = ref.cancel
+              return [
+                _c(
+                  "div",
+                  { staticClass: "button-wrapper" },
+                  [
+                    _c(
+                      "b-button",
+                      {
+                        attrs: { size: "sm", variant: "primary" },
+                        on: {
+                          click: function($event) {
+                            return _vm.playDirection()
+                          }
+                        }
+                      },
+                      [_vm._v("\n\t\t\t        Oke\n\t\t\t      ")]
+                    )
+                  ],
+                  1
+                )
+              ]
+            }
+          },
+          {
+            key: "default",
+            fn: function(ref) {
+              var hide = ref.hide
+              return [_vm._v("\n\t\t    \tListen for direction\n\t\t    ")]
             }
           }
         ])
@@ -54280,35 +54381,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "bar-text" }, [
-      _c("span", [_vm._v("Ukuran Soal :\n\t\t\t\t\t\t")]),
-      _vm._v(" "),
-      _c(
-        "a",
-        {
-          staticClass: "font-small",
-          attrs: { href: "javascript:void(0)", id: "font-small" }
-        },
-        [_vm._v("A")]
-      ),
-      _vm._v(" "),
-      _c(
-        "a",
-        {
-          staticClass: "font-middle",
-          attrs: { href: "javascript:void(0)", id: "font-middle" }
-        },
-        [_vm._v("A")]
-      ),
-      _vm._v(" "),
-      _c(
-        "a",
-        {
-          staticClass: "font-big",
-          attrs: { href: "javascript:void(0)", id: "font-big" }
-        },
-        [_vm._v("A")]
-      )
+    return _c("p", { staticClass: "text-info" }, [
+      _vm._v("Press "),
+      _c("b", [_vm._v("enter")]),
+      _vm._v(" to submit your answer")
     ])
   }
 ]
@@ -54632,7 +54708,7 @@ var render = function() {
                 _c("span", { staticClass: "line" })
               ]),
               _vm._v(" "),
-              _vm.jadwal && _vm.ujian && _vm.ujian.status_ujian != "3"
+              _vm.jadwal && _vm.ujian && _vm.ujian.status_ujian != "1"
                 ? _c("div", { staticClass: "form-group" }, [
                     _c("label", { attrs: { for: "token" } }, [_vm._v("Token")]),
                     _vm._v(" "),
@@ -54678,7 +54754,7 @@ var render = function() {
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              _vm.jadwal && _vm.ujian && _vm.ujian.status_ujian != "3"
+              _vm.jadwal && _vm.ujian && _vm.ujian.status_ujian != "1"
                 ? _c("div", { staticClass: "form-group" }, [
                     _c(
                       "button",
@@ -75473,7 +75549,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Kerjakan_vue_vue_type_template_id_81431a40___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Kerjakan.vue?vue&type=template&id=81431a40& */ "./resources/js/pages/ujian/Kerjakan.vue?vue&type=template&id=81431a40&");
 /* harmony import */ var _Kerjakan_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Kerjakan.vue?vue&type=script&lang=js& */ "./resources/js/pages/ujian/Kerjakan.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _Kerjakan_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Kerjakan.vue?vue&type=style&index=0&lang=css& */ "./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -75481,7 +75559,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _Kerjakan_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _Kerjakan_vue_vue_type_template_id_81431a40___WEBPACK_IMPORTED_MODULE_0__["render"],
   _Kerjakan_vue_vue_type_template_id_81431a40___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -75510,6 +75588,22 @@ component.options.__file = "resources/js/pages/ujian/Kerjakan.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Kerjakan_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Kerjakan.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/ujian/Kerjakan.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Kerjakan_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css& ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Kerjakan_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./Kerjakan.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/ujian/Kerjakan.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Kerjakan_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Kerjakan_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Kerjakan_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Kerjakan_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Kerjakan_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -76181,10 +76275,10 @@ var actions = {
   getUjian: function getUjian(_ref2, payload) {
     var commit = _ref2.commit,
         state = _ref2.state;
-    commit('SET_LOADING', true, {
-      root: true
-    });
     return new Promise(function (resolve, reject) {
+      commit('SET_LOADING', true, {
+        root: true
+      });
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/ujian/setter", payload).then(function (response) {
         commit('ASSIGN_SOAL_UJIAN', response.data);
         commit('SET_LOADING', false, {
@@ -76195,16 +76289,6 @@ var actions = {
         commit('SET_LOADING', false, {
           root: true
         });
-        resolve(response.data);
-      });
-    });
-  },
-  ujianHariIni: function ujianHariIni(_ref3, payload) {
-    var commit = _ref3.commit,
-        state = _ref3.state;
-    return new Promise(function (resolve, reject) {
-      _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/banksoal/getday").then(function (response) {
-        commit('UJIAN_HARI_INI', response.data);
         resolve(response.data);
       });
     });
@@ -76518,16 +76602,28 @@ var actions = {
   submitJawabanEssy: function submitJawabanEssy(_ref2, payload) {
     var commit = _ref2.commit,
         state = _ref2.state;
+    commit('SET_LOADINGER', true, {
+      root: true
+    });
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/ujian", payload).then(function (response) {
+        commit('SET_LOADINGER', false, {
+          root: true
+        });
         commit('SLICE_DATA_RESP', response.data);
         resolve(response.data);
       })["catch"](function (error) {
+        commit('SET_LOADINGER', false, {
+          root: true
+        });
+
         if (error.response.status == 422) {
           commit('SET_ERRORS', error.response.data.errors, {
             root: true
           });
         }
+
+        reject(error);
       });
     });
   },

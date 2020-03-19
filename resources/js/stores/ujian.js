@@ -64,16 +64,20 @@ const actions = {
 		})
 	},
 	submitJawabanEssy({ commit, state }, payload) {
+		commit('SET_LOADINGER',true, { root: true })
 		return new Promise(( resolve, reject ) => {
 			$axios.post(`/ujian`, payload)
 			.then((response) => {
+				commit('SET_LOADINGER',false, { root: true })
 				commit('SLICE_DATA_RESP', response.data)
 				resolve(response.data)
 			})
 			.catch((error) => {
+				commit('SET_LOADINGER',false, { root: true })
 				if (error.response.status == 422) {
 					commit('SET_ERRORS', error.response.data.errors, { root: true })
 				}
+				reject(error)
 			})
 		}) 
 	},

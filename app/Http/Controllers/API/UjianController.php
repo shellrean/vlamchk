@@ -76,7 +76,7 @@ class UjianController extends Controller
         $kj = JawabanSoal::find($request->jawab);
 
         if($request->essy) {
-            $find->jawab_essy = $request->essy;
+            $find->esay = $request->essy;
             $find->save();
 
             return response()->json(['data' => $find,'index' => $request->index]);
@@ -166,40 +166,22 @@ class UjianController extends Controller
 
         
         $find = JawabanPeserta::with([
-            'soal','soal.jawabans' => function($q) {
-                $q->inRandomOrder();
-            }
+            'soal','soal.jawabans'
         ])->where([
             'peserta_id'    => $user_id,
             'jadwal_id'     => $jadwal_id,
         ])->get();
 
         if ($find->count() < 1 ) {
-            if($id == 0) {
-                $peserta = Peserta::find($user_id);
-                $jursan = $peserta->jurusan_id;
-                $banksols = DB::table('banksoals')
-                ->join('matpels', function($q) {
-                    $q->on('matpels.id','=','banksoals.matpel_id');
-                })
-                ->select('banksoals.id')
-                ->where('matpels.jurusan_id', '=', $jursan)
-                ->first();
-                $id = $banksols->id;
-                $all = Banksoal::with(['pertanyaans','pertanyaans.jawabans'])->where('id', $banksols->id)->first();
-            }
-            else {
-                $all = Banksoal::with(['pertanyaans','pertanyaans.jawabans'])->where('id',$id)->first();
-            }
+
+            $all = Banksoal::with(['pertanyaans','pertanyaans.jawabans'])->where('id',$id)->first();
 
             $max_soal = $all->jumlah_soal;
             $max_essay = $all->jumlah_soal_esay;
             $i = 1;
-            $collection = new Collection($all->pertanyaans);
-            $perta = $collection->shuffle();
-            
-            foreach($perta as $p) {
-                if($p->tipe_soal != 1) {
+
+            foreach($all->pertanyaans as $p) {
+                if($p->tipe_soal != 3) {
                     continue;
                 }
                 JawabanPeserta::create([
@@ -211,11 +193,31 @@ class UjianController extends Controller
                     'jadwal_id'     => $jadwal_id,
                     'ragu_ragu'     => 0
                 ]);
-
                 if ($i++ == $max_soal) break;
             }
 
-            $i = 1;
+            $collection = new Collection($all->pertanyaans);
+            $perta = $collection->shuffle();
+
+            if($perta != null) {
+                foreach($perta as $p) {
+                    if($p->tipe_soal != 1) {
+                        continue;
+                    }
+                    JawabanPeserta::create([
+                        'peserta_id'    => $user_id, 
+                        'banksoal_id'   => $id, 
+                        'soal_id'       => $p->id, 
+                        'jawab'         => 0, 
+                        'iscorrect'     => 0,
+                        'jadwal_id'     => $jadwal_id,
+                        'ragu_ragu'     => 0
+                    ]);
+
+                    if ($i++ == $max_soal) break;
+                }
+            }
+
             if ($max_essay != null && $max_essay > 0) {
                 foreach($perta as $p) {
                     if($p->tipe_soal != 2) {
@@ -241,7 +243,9 @@ class UjianController extends Controller
                 'peserta_id'    => $user_id
             ])->first();
 
-
+            /** 
+             * This using random order 
+             * 
             $find = JawabanPeserta::with([
                 'soal','soal.jawabans' => function($q) {
                     $q->inRandomOrder();
@@ -250,8 +254,17 @@ class UjianController extends Controller
                 'peserta_id'    => $user_id, 
                 'jadwal_id'     => $jadwal_id,
             ])->get();
+
+            **/
+
+            $find = JawabanPeserta::with([
+                'soal','soal.jawabans'
+            ])->where([
+                'peserta_id'    => $user_id, 
+                'jadwal_id'     => $jadwal_id,
+            ])->get();
     
-            return response()->json(['data' => $find, 'detail' => $detail, 'type' => 'Under']);
+            return response()->json(['data' => $find, 'detail' => $detail]);
         }
         
         $ujian = SiswaUjian::where([
@@ -310,7 +323,7 @@ class UjianController extends Controller
         $ujian->sisa_waktu = $deUjian->lama-$diff_in_minutes;
         $ujian->save();
 
-        return response()->json(['data' => $find, 'detail' => $ujian, 'oke' => $diff_in_minutes]);
+        return response()->json(['data' => $find, 'detail' => $ujian]);
     }
 
     /**

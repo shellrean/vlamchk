@@ -35,8 +35,8 @@ const actions = {
 		})
 	},
 	getUjian({ commit, state }, payload) {
-		commit('SET_LOADING',true, { root: true })
 		return new Promise(( resolve, reject) => {
+			commit('SET_LOADING',true, { root: true })
 			$axios.post(`/ujian/setter`,payload)
 			.then((response) => {
 				commit('ASSIGN_SOAL_UJIAN', response.data)
@@ -47,15 +47,6 @@ const actions = {
 				commit('SET_LOADING',false, { root: true })
 				resolve(response.data)
 			})
-		})
-	},
-	ujianHariIni({ commit, state }, payload) {
-		return new Promise(( resolve, reject) => {
-			$axios.get(`/banksoal/getday`)
-			.then( (response) => {
-				commit('UJIAN_HARI_INI',response.data)
-				resolve(response.data)
-			}) 
 		})
 	}
 }

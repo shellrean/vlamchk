@@ -1,6 +1,6 @@
 <template>
 	<div id="audio" class="player-wrapper">
-		<div class="player">
+		<div class="player" v-if="show">
 			<div class="player-controls">
 				<div>
 					<a v-on:click.prevent="playing = !playing" title="Play/Pause" href="#">
@@ -11,21 +11,13 @@
 					</a>
 				</div>
 				<div>
-					<div v-on:click="seek" class="player-progress" title="Time played : Total time">
+					<div class="player-progress" title="Time played : Total time">
 						<div :style="{ width: this.percentComplete + '%' }" class="player-seeker"></div>
 					</div>
 					<div class="player-time">
 						<div class="player-time-current">{{ this.currentSeconds | convertTimeHHMMSS }}</div>
 						<div class="player-time-total">{{ this.durationSeconds | convertTimeHHMMSS }}</div>
 					</div>
-				</div>
-				<div>
-					<a v-on:click.prevent="" v-on:mouseenter="showVolume = true" title="Volume" href="#">
-						<svg width="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-							<path fill="currentColor" d="M19,13.805C19,14.462,18.462,15,17.805,15H1.533c-0.88,0-0.982-0.371-0.229-0.822l16.323-9.055C18.382,4.67,19,5.019,19,5.9V13.805z"/>
-						</svg>
-						<input v-model.lazy.number="volume" v-show="showVolume" type="range" min="0" max="100"/>
-					</a>
 				</div>
 			</div>
 			<audio :loop="innerLoop" ref="audiofile" :src="file" preload="auto" style="display: none;"></audio>
@@ -46,6 +38,10 @@ export default {
 		loop: {
 			type: Boolean,
 			default: false
+		},
+		show: {
+			type: Boolean,
+			default: true
 		}
 	},
 	data: () => ({
@@ -76,7 +72,9 @@ export default {
 	},
 	watch: {
 		playing(value) {
-			if (value) { return this.audio.play(); }
+			if (value) { 
+				return this.audio.play(); 
+			}
 			this.audio.pause();
 		},
 		volume(value) {
