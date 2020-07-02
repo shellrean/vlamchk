@@ -1,6 +1,6 @@
 ## Information
 
-Application for school management
+Aplikasi ujian sekolah berbasis komputer untuk client (siswa) dan server local
 PHP v7.2
 
 ## License
