@@ -15,7 +15,7 @@ class CreateJadwalsTable extends Migration
     {
         Schema::create('jadwals', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('banksoal_id');
+            $table->text('ids');
             $table->date('tanggal');
             $table->time('mulai');
             $table->time('berakhir');
@@ -23,8 +23,6 @@ class CreateJadwalsTable extends Migration
             $table->string('token',50);
             $table->char('status_ujian',1);
             $table->timestamps();
-
-            $table->foreign('banksoal_id')->references('id')->on('banksoals')->onDelete('cascade');
         });
     }
 

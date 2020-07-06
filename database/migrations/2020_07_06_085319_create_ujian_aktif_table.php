@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMatpelsTable extends Migration
+class CreateUjianAktifTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateMatpelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('matpels', function (Blueprint $table) {
+        Schema::create('ujian_aktif', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('kode_mapel',100);
-            $table->string('agama_id');
-            $table->string('jurusan_id');
-            $table->string('nama');
+            $table->string('kelompok');
+            $table->string('ujian_id');
+            $table->string('token');
+            $table->string('status_token');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateMatpelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('matpels');
+        Schema::dropIfExists('ujian_aktif');
     }
 }

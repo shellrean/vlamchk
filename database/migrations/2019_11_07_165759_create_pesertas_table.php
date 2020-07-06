@@ -15,11 +15,14 @@ class CreatePesertasTable extends Migration
     {
         Schema::create('pesertas', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('jurusan_id')->nullable();
+            $table->integer('agama_id')->nullable();
+            $table->string('name_server');
             $table->string('no_ujian');
             $table->string('nama');
             $table->string('password');
             $table->string('api_token')->nullable();
-            $table->timestamps();
+            $table->integer('sesi');
         });
     }
 

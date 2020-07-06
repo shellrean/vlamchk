@@ -15,10 +15,11 @@ class CreateSoalsTable extends Migration
     {
         Schema::create('soals', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('banksoal_id');
-            $table->foreign('banksoal_id')->references('id')->on('banksoals')->onDelete('cascade');
+            $table->bigInteger('banksoal_id');
+            $table->integer('tipe_soal');
             $table->text('pertanyaan');
-            $table->timestamps();
+            $table->string('audio')->nullable();
+            $table->string('direction')->nullable();
         });
     }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMatpelsTable extends Migration
+class CreateFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateMatpelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('matpels', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('kode_mapel',100);
-            $table->string('agama_id');
-            $table->string('jurusan_id');
-            $table->string('nama');
-            $table->timestamps();
+            $table->bigInteger('directory_id');
+            $table->string('dirname');
+            $table->string('filename');
+            $table->string('path');
+            $table->string('exstension');
+            $table->string('size');
         });
     }
 
@@ -30,6 +31,6 @@ class CreateMatpelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('matpels');
+        Schema::dropIfExists('files');
     }
 }

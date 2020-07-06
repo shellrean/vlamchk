@@ -15,14 +15,12 @@ class CreateSiswaUjiansTable extends Migration
     {
         Schema::create('siswa_ujians', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('peserta_id');
-            $table->unsignedBigInteger('jadwal_id');
+            $table->bigInteger('peserta_id');
+            $table->bigInteger('jadwal_id');
             $table->string('mulai_ujian');
+            $table->integer('uploaded')->default('0');
             $table->integer('sisa_waktu');
             $table->char('status_ujian');
-
-            $table->foreign('peserta_id')->references('id')->on('pesertas')->onDelete('cascade');
-            $table->foreign('jadwal_id')->references('id')->on('jadwals')->onDelete('cascade');
 
             $table->timestamps();
         });

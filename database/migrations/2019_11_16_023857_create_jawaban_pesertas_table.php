@@ -15,18 +15,14 @@ class CreateJawabanPesertasTable extends Migration
     {
         Schema::create('jawaban_pesertas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('banksoal_id');
-            $table->unsignedBigInteger('soal_id');
-            $table->unsignedBigInteger('peserta_id');
-            $table->unsignedBigInteger('jadwal_id');
+            $table->bigInteger('banksoal_id');
+            $table->bigInteger('soal_id');
+            $table->text('esay')->nullable();
+            $table->bigInteger('peserta_id');
+            $table->bigInteger('jadwal_id');
             $table->bigInteger('jawab');
             $table->char('ragu_ragu');
             $table->char('iscorrect');
-
-            $table->foreign('banksoal_id')->references('id')->on('banksoals')->onDelete('cascade');
-            $table->foreign('soal_id')->references('id')->on('soals')->onDelete('cascade');
-            $table->foreign('peserta_id')->references('id')->on('pesertas')->onDelete('cascade');
-            $table->foreign('jadwal_id')->references('id')->on('jadwals')->onDelete('cascade');
             $table->timestamps();
         });
     }
